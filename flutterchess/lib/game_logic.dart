@@ -79,25 +79,60 @@ bool move = clampBorder(l + 1) == letter  && i == index
 
 }
 
-bool checkforBishop(ChessPieceData pieceData , int letter, int index, BuildContext context, bool queen){
+bool checkforBishop(ChessPieceData pieceData , int index, int letter, BuildContext context, bool queen){
   if(pieceData.name == 'bW' || pieceData.name == 'bB' || queen){
-    
+
+    if(context.read<DataArray>().getPiece(index, letter)[2] == pieceData.color ){
+      print("same color");
+      return false;
+    }
     // check if letter and index are in the full diogonal of the piece.
     for(int i = 1; i < 8; i++){
-      if(pieceData.letter + i == letter && pieceData.index + i == index){
+      // Down right
+      if(pieceData.index + i == index && pieceData.letter + i == letter){
+        print("yess");
+        for(int i = 1; i <  (index - pieceData.index ).abs() ; i++){
+      if(context.read<DataArray>().getPiece(clampBorder(pieceData.index +i), clampBorder(pieceData.letter + i))[1] != "N" ){
+        print("Down right");
+        return false;
+        }
+        }
         return true;
+       
       }
-      if(pieceData.letter - i == letter && pieceData.index + i == index){
-        return true;
+      //Down Left
+      if(pieceData.index + i == index && pieceData.letter - i == letter){
+        for(int i = 1; i <  (index - pieceData.index ).abs() ; i++){
+      if(context.read<DataArray>().getPiece(clampBorder(pieceData.index +i), clampBorder(pieceData.letter - i))[1] != "N" ){
+        print("DownLeft");
+        return false;
+        }
+       }
+       return true;
       }
-      if(pieceData.letter + i == letter && pieceData.index - i == index){
-        return true;
+      //Up right
+      if(pieceData.index - i == index && pieceData.letter + i == letter){
+        for(int i = 1; i <  (index - pieceData.index ).abs() ; i++){
+      if(context.read<DataArray>().getPiece(clampBorder(pieceData.index -i), clampBorder(pieceData.letter + i))[1] != "N" ){
+        print("Up right");
+        return false;
+        }
+       }
+       return true;
       }
-      if(pieceData.letter - i == letter && pieceData.index - i == index){
+      //Up left
+      if(pieceData.index - i == index && pieceData.letter - i == letter){
+        for(int i = 1; i <  (index - pieceData.index ).abs() -1 ; i++){
+      if(context.read<DataArray>().getPiece(clampBorder(pieceData.index -i), clampBorder(pieceData.letter - i))[1] != "N" ){
+        print("Up left");
+        return false;
+        }
+       }
         return true;
       }
     }
   }
+  print([pieceData.index, pieceData.letter, index, letter]);
   return false;
 }
 
