@@ -1,0 +1,20 @@
+Saturday:
+1. Finish Bishops Behavior moves
+2. Finish Rooks Behavior moves
+3. Finish Queen Behavior moves
+
+Sunday:
+1.Castle Behavior
+2. Promotion Behavior
+3. En passant Behavior
+
+Monday:
+1.Visualize possibles moves
+2. Check behavior 
+3.Checkmate Behavior
+
+Tuesday:
+1. UI of the game
+2. Make save  game system.
+
+
