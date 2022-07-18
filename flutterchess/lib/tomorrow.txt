@@ -1,12 +1,9 @@
-Saturday:
-1. Finish Bishops Behavior moves
-2. Finish Rooks Behavior moves
-3. Finish Queen Behavior moves
-
 Sunday:
-1.Castle Behavior
-2. Promotion Behavior
-3. En passant Behavior
+1. Finish Queen Behavior moves. Check YES
+2. Finish PAWN Behavior moves. 
+2.Castle Behavior
+3. Promotion Behavior
+4. En passant Behavior
 
 Monday:
 1.Visualize possibles moves

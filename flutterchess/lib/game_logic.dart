@@ -8,44 +8,40 @@ import'utils.dart';
 int border = 0;
 
 
-bool checkforRook(ChessPieceData pieceData , int index, int letter, BuildContext context , bool queen ){
+bool checkforRook(ChessPieceData pieceData , int index, int letter, BuildContext context, bool queen  ){
   if(pieceData.name == 'rW' || pieceData.name == 'rB'|| queen){
     if(pieceData.letter == letter || pieceData.index == index){
    // If there  is a piece that block the road in the down return false  
    if(pieceData.index  < index) {
     for(int i = 1; i<  (index - pieceData.index ).abs() ; i++){
       if(context.read<DataArray>().getPiece(clampBorder(pieceData.index +i), letter)[1] != "N" ){
-        print("Ok");
         return  false;}
     }}
     // If there is a piece that block the  road in the up return false
     else if(pieceData.index  > index) {
         for(int i = 1; i <  (index - pieceData.index ).abs() ; i++){
       if(context.read<DataArray>().getPiece(clampBorder(pieceData.index -i), letter)[1] != "N" ){
-        print("qqa");
         return false;}
     }}
     // If there is a piece that block the road in the left return false
     else if(pieceData.letter  > letter) {
       for(int i = 1; i <  (letter - pieceData.letter ).abs() ; i++){
       if(context.read<DataArray>().getPiece(index, clampBorder(pieceData.letter -i))[1] != "N" ){
-        print("qqa");
         return false;}
     }}
     // If there is a piece that block the road in the right return false
     else if(pieceData.letter < letter){
     for(int i = 1; i < (letter - pieceData.letter).abs() ; i++){
       if(Provider.of<DataArray>(context,listen:false).getPiece(index, clampBorder(pieceData.letter + i))[1] != "N" ){
-        print([pieceData.letter, letter] );
         return  false;}
     }}
 
     // create an if statement that check if the space has a piece with same color of the pieceData
     // if so return false
     if(Provider.of<DataArray>(context,listen:false).getPiece(index, letter)[2] == pieceData.color){
-      print("Is the same color");
       return false;
     }
+
 
     return true;
     }
@@ -70,7 +66,6 @@ bool move = clampBorder(l + 1) == letter  && i == index
       return false;
     }
     if(getPiece(index, letter)[2] == pieceData.color){
-      print("Is the same color");
       return false;
     }
     return true;
@@ -80,20 +75,17 @@ bool move = clampBorder(l + 1) == letter  && i == index
 }
 
 bool checkforBishop(ChessPieceData pieceData , int index, int letter, BuildContext context, bool queen){
-  if(pieceData.name == 'bW' || pieceData.name == 'bB' || queen){
+  if(pieceData.name == 'bW' || pieceData.name == 'bB'|| queen ){
 
     if(context.read<DataArray>().getPiece(index, letter)[2] == pieceData.color ){
-      print("same color");
       return false;
     }
     // check if letter and index are in the full diogonal of the piece.
     for(int i = 1; i < 8; i++){
       // Down right
       if(pieceData.index + i == index && pieceData.letter + i == letter){
-        print("yess");
         for(int i = 1; i <  (index - pieceData.index ).abs() ; i++){
       if(context.read<DataArray>().getPiece(clampBorder(pieceData.index +i), clampBorder(pieceData.letter + i))[1] != "N" ){
-        print("Down right");
         return false;
         }
         }
@@ -104,7 +96,6 @@ bool checkforBishop(ChessPieceData pieceData , int index, int letter, BuildConte
       if(pieceData.index + i == index && pieceData.letter - i == letter){
         for(int i = 1; i <  (index - pieceData.index ).abs() ; i++){
       if(context.read<DataArray>().getPiece(clampBorder(pieceData.index +i), clampBorder(pieceData.letter - i))[1] != "N" ){
-        print("DownLeft");
         return false;
         }
        }
@@ -114,7 +105,6 @@ bool checkforBishop(ChessPieceData pieceData , int index, int letter, BuildConte
       if(pieceData.index - i == index && pieceData.letter + i == letter){
         for(int i = 1; i <  (index - pieceData.index ).abs() ; i++){
       if(context.read<DataArray>().getPiece(clampBorder(pieceData.index -i), clampBorder(pieceData.letter + i))[1] != "N" ){
-        print("Up right");
         return false;
         }
        }
@@ -122,9 +112,8 @@ bool checkforBishop(ChessPieceData pieceData , int index, int letter, BuildConte
       }
       //Up left
       if(pieceData.index - i == index && pieceData.letter - i == letter){
-        for(int i = 1; i <  (index - pieceData.index ).abs() -1 ; i++){
+        for(int i = 1; i <  (index - pieceData.index ).abs() ; i++){
       if(context.read<DataArray>().getPiece(clampBorder(pieceData.index -i), clampBorder(pieceData.letter - i))[1] != "N" ){
-        print("Up left");
         return false;
         }
        }
@@ -132,31 +121,12 @@ bool checkforBishop(ChessPieceData pieceData , int index, int letter, BuildConte
       }
     }
   }
-  print([pieceData.index, pieceData.letter, index, letter]);
   return false;
 }
 
 bool checkforQueen(ChessPieceData pieceData , int index, int letter, BuildContext context){
-  if(pieceData.name == 'qW' || pieceData.name == 'qB'){
-    if(pieceData.letter == letter || pieceData.index == index){
-      return true;
-    }
-    // check if letter and index are in the full diogonal of the piece.
-    for(int i = 1; i < 8; i++){
-      if(pieceData.letter + i == letter && pieceData.index + i == index){
-        return true;
-      }
-      if(pieceData.letter - i == letter && pieceData.index + i == index){
-        return true;
-      }
-      if(pieceData.letter + i == letter && pieceData.index - i == index){
-        return true;
-      }
-      if(pieceData.letter - i == letter && pieceData.index - i == index){
-        return true;
-      }
-    }
-
+  if(checkforBishop(pieceData, index, letter, context, true)|| checkforRook(pieceData, index, letter, context, true)){
+    return true;
   }
   return false;
 }
@@ -176,7 +146,6 @@ bool checkforPawn(ChessPieceData pieceData , int index, int letter, BuildContext
     && pieceData.index - 1 == index && pieceData.letter != letter&&
     context.read<DataArray>().getPiece(pieceData.index - 1, clampBorder(pieceData.letter + 1))[2] != "white"&&
     context.read<DataArray>().getPiece(pieceData.index - 1, clampBorder(pieceData.letter +1))[2] != "white"){
-      print([pieceData.index, index] );
       return true;
     }
         // If there is a Pieces  in front cancel the move.
@@ -186,7 +155,7 @@ bool checkforPawn(ChessPieceData pieceData , int index, int letter, BuildContext
         // Check if there is no Pieces ahead so the pawn can move forward
     if(context.read<DataArray>().getPiece(clampBorder(pieceData.index - 1) , pieceData.letter )[1] == "N"
     && pieceData.index - 1 == index && pieceData.letter == letter){
-      print([pieceData.index, index]);
+  
       return true;
     }
     
@@ -199,8 +168,6 @@ bool checkforPawn(ChessPieceData pieceData , int index, int letter, BuildContext
     pieceData.index + 1 == index && pieceData.letter != letter&&
     context.read<DataArray>().getPiece(pieceData.index + 1, pieceData.letter - border)[2] != "black"&&
     context.read<DataArray>().getPiece(pieceData.index + 1, pieceData.letter + border)[2] != "black"){
-      print([pieceData.letter, letter]);
-      print("mmmeq");
       return true;
     }
     // If there is a Pieces  in front cancel the move.
@@ -210,7 +177,6 @@ bool checkforPawn(ChessPieceData pieceData , int index, int letter, BuildContext
     // Check if there is no Pieces ahead so the pawn can move forward
     if(context.read<DataArray>().getPiece(pieceData.index + 1 , pieceData.letter )[1] == "N"
     && pieceData.index + 1 == index && pieceData.letter == letter){
-      print([pieceData.index, index]);
       return true;
     }
   }
@@ -219,6 +185,9 @@ bool checkforPawn(ChessPieceData pieceData , int index, int letter, BuildContext
 
 bool checkforKnight(ChessPieceData pieceData , int index, int letter, BuildContext context){
   if(pieceData.name == "kW" || pieceData.name == "kB"){
+    if(context.read<DataArray>().getPiece(index,letter)[2] == pieceData.color){
+      return false;
+    }
     if(pieceData.letter + 2 == letter && pieceData.index + 1 == index){
       return true;
     }
@@ -247,6 +216,27 @@ bool checkforKnight(ChessPieceData pieceData , int index, int letter, BuildConte
   return false ;
 }
 
-// Create a function that check if a piece can move to a cell.
-// If there is no other piece that block his cell
+bool checkforPromotion()
 
+// Execute all pieces checks in one Function 
+bool checkPieces(dynamic pieceData , int index, int letter, BuildContext context) {
+  if(checkforRook(pieceData, index, letter, context,false)){
+    return true;
+  }
+  if(checkforBishop(pieceData, index, letter, context, false)){
+    return true;
+  }
+  if(checkforQueen(pieceData, index, letter, context)){
+    return true;
+  }
+  if(checkforKing(pieceData, index, letter, context)){
+    return true;
+  }
+  if(checkforPawn(pieceData, index, letter, context)){
+    return true;
+  }
+  if(checkforKnight(pieceData, index, letter, context)){
+    return true;
+  }
+  return false;
+}
