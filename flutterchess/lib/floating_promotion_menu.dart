@@ -24,7 +24,7 @@ class FloatingPromotionMenu extends StatelessWidget {
     width:50,
     child:  blackPieceCollection[index][1],),
     onTap: () =>  {value = blackPieceCollection[index][1]
-                    deleteFloatingButtons();
+                   // deleteFloatingButtons()
     }
   ));
   

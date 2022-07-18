@@ -1,6 +1,6 @@
 import 'chess_piece_data.dart';
 import 'package:flutter/material.dart';
-import 'data_array.dart';
+import 'data.dart';
 import 'package:provider/provider.dart';
 import'utils.dart';
 
@@ -215,8 +215,8 @@ bool checkforKnight(ChessPieceData pieceData , int index, int letter, BuildConte
   }
   return false ;
 }
-
-bool checkforPromotion()
+//Todo: make Pawn Promotion functionality.
+//bool checkforPromotion()
 
 // Execute all pieces checks in one Function 
 bool checkPieces(dynamic pieceData , int index, int letter, BuildContext context) {

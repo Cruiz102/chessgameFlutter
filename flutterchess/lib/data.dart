@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'constant.dart';
 
 
+
 class DataArray extends ChangeNotifier {
   List<dynamic> _data = [
     [rB,kB,bB,qB,kingB,bB,kB,rB],
@@ -40,5 +41,17 @@ class DataArray extends ChangeNotifier {
   void setPiece(int index, int letter, dynamic value) {
     _data[index][letter] = value;
     notifyListeners();
+  }
+}
+
+class WidgetOnScreen extends ChangeNotifier{
+  // ignore: prefer_final_fields
+  List<Widget> _onScreen = [];
+  List<Widget> get onScreen => _onScreen;
+  void addWidget(Widget widget){
+    _onScreen.add(widget);
+  }
+  void deleteLast(){
+    _onScreen.removeLast();
   }
 }

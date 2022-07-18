@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'constant.dart';
 class ChessPieceData{
   Widget image;
   int letter;
