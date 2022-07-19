@@ -1,14 +1,8 @@
-Sunday:
-1. Finish Queen Behavior moves. Check YES
-2. Finish PAWN Behavior moves. 
-2.Castle Behavior
-3. Promotion Behavior
-4. En passant Behavior
 
 Monday:
-1.Visualize possibles moves
-2. Check behavior 
-3.Checkmate Behavior
+1. Make Pawn moves
+3. Make Enpassant functionality
+4. Make Castling functionality
 
 Tuesday:
 1. UI of the game

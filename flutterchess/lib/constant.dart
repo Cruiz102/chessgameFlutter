@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 // If turn is true then white play. If it is false black play
-bool turn = true;
 List pW = [Image.asset('assets/pawn_white.png') , "pW",  "white"];
 List pB = [Image.asset('assets/pawn_black.png') , "pB",  "black"];
 List kW = [Image.asset('assets/knight_white.png') , "kW",  "white"];

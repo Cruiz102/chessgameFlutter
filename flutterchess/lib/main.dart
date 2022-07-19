@@ -5,6 +5,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutterchess/data.dart';
+import 'package:flutterchess/floating_promotion_menu.dart';
 import 'package:provider/provider.dart';
 import 'chess_board.dart';
 
@@ -17,7 +18,8 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => DataArray()),
-        ChangeNotifierProvider(create: (context) =>WidgetOnScreen())
+        ChangeNotifierProvider(create: (context) =>WidgetOnScreen()),
+        ChangeNotifierProvider(create: (context) =>GameController())
       ],
 
       
@@ -45,9 +47,9 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Add ChessBoard to the Body
-    context.watch<WidgetOnScreen>().addWidget(ChessBoard());
+
     return Scaffold(
-      body: Stack(children: context.watch<WidgetOnScreen>().onScreen),
+      body: Stack(children: context.watch<WidgetOnScreen>().onScreen()),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Provider.of<DataArray>(context, listen: false).setData();

@@ -125,57 +125,84 @@ bool checkforBishop(ChessPieceData pieceData , int index, int letter, BuildConte
 }
 
 bool checkforQueen(ChessPieceData pieceData , int index, int letter, BuildContext context){
+  if(pieceData.name == "qW" || pieceData.name == "qB"){
   if(checkforBishop(pieceData, index, letter, context, true)|| checkforRook(pieceData, index, letter, context, true)){
     return true;
-  }
+  }}
   return false;
 }
 
 bool checkforPawn(ChessPieceData pieceData , int index, int letter, BuildContext context){
-  if (pieceData.letter == 7 || pieceData.letter == 0 || pieceData.index == 7 || pieceData.index == 0){
-    border = 0;
-  }
-  else{
-    border = 1;
-  }
-  if(pieceData.name == "pW"){
-    // Behaviour for the white pawn.
-       //Check if the piece has others pieces in his front diagonal to see if is possible to take a piece.
-     if((context.read<DataArray>().getPiece(pieceData.index - 1, clampBorder(pieceData.letter+ 1))[1] != "N"||
-    context.read<DataArray>().getPiece(pieceData.index - 1, clampBorder(pieceData.letter - 1) )[1] != "N")
-    && pieceData.index - 1 == index && pieceData.letter != letter&&
-    context.read<DataArray>().getPiece(pieceData.index - 1, clampBorder(pieceData.letter + 1))[2] != "white"&&
-    context.read<DataArray>().getPiece(pieceData.index - 1, clampBorder(pieceData.letter +1))[2] != "white"){
-      return true;
-    }
-        // If there is a Pieces  in front cancel the move.
-    if(context.read<DataArray>().getPiece(clampBorder(pieceData.index - 1) , pieceData.letter)[1] != "N"){
+  if(pieceData.name =="pW"){
+           // Check if where is going to land there is not a piece from the same color
+      if(context.read<DataArray>().getPiece(index, letter)[2] == pieceData.color ){
+      print("same color");
       return false;
     }
-        // Check if there is no Pieces ahead so the pawn can move forward
-    if(context.read<DataArray>().getPiece(clampBorder(pieceData.index - 1) , pieceData.letter )[1] == "N"
-    && pieceData.index - 1 == index && pieceData.letter == letter){
-  
+    // If there is a Pieces  in front cancel the move.
+    if(context.read<DataArray>().getPiece(clampBorder(pieceData.index -1) , pieceData.letter)[1] != "N"){
+      return false;
+    }
+    // If there is a  Piece in the Left of the pawn Takes
+    if(context.read<DataArray>().getPiece(clampBorder(pieceData.index - 1), clampBorder(pieceData.letter - 1))[1] != "N"
+    && pieceData.index - 1 == index && pieceData.letter - 1 == letter){
+      print("possible to take");
+      return true;
+    }
+
+    // If there is a  Piece in the Right of the pawn Takes
+    if(context.read<DataArray>().getPiece(clampBorder(pieceData.index + 1), clampBorder(pieceData.letter + 1))[1] != "N"
+    && pieceData.index - 1 == index && pieceData.letter + 1 == letter){
+      print("possible to take");
       return true;
     }
     
-  }
-  if(pieceData.name == "pB"){
-    // The same behavior as before with the change that this is for the black pawn.
-    //Check if the piece has others pieces in his front diagonal to see if is possible to take a piece.
-    if((context.read<DataArray>().getPiece(pieceData.index + 1, pieceData.letter+ border)[1] != "N"||
-    context.read<DataArray>().getPiece(pieceData.index + 1, pieceData.letter- border)[1] != "N")&&
-    pieceData.index + 1 == index && pieceData.letter != letter&&
-    context.read<DataArray>().getPiece(pieceData.index + 1, pieceData.letter - border)[2] != "black"&&
-    context.read<DataArray>().getPiece(pieceData.index + 1, pieceData.letter + border)[2] != "black"){
+    // If the pawn didn't move yet he can move two spaces
+    if(context.read<DataArray>().getPiece(clampBorder(pieceData.index - 2), pieceData.letter)[1] == "N"
+    && pieceData.index - 2 == index && pieceData.letter == letter && pieceData.index == 1){
+      print("possible to move two");
       return true;
     }
-    // If there is a Pieces  in front cancel the move.
-    if(context.read<DataArray>().getPiece(pieceData.index +1 , pieceData.letter)[1] != "N"){
+
+     // Check if there is no Pieces ahead so the pawn can move forward
+    if(context.read<DataArray>().getPiece(clampBorder(pieceData.index - 1) , pieceData.letter )[1] == "N"
+    && pieceData.index - 1 == index && pieceData.letter == letter){
+      return true;
+    }
+  }
+  if(pieceData.name == "pB"){
+       // Check if where is going to land there is not a piece from the same color
+      if(context.read<DataArray>().getPiece(index, letter)[2] == pieceData.color ){
+        print("same color");
       return false;
     }
-    // Check if there is no Pieces ahead so the pawn can move forward
-    if(context.read<DataArray>().getPiece(pieceData.index + 1 , pieceData.letter )[1] == "N"
+    // If there is a Pieces  in front cancel the move.
+    if(context.read<DataArray>().getPiece(clampBorder(pieceData.index +1) , pieceData.letter)[1] != "N"){
+      return false;
+    }
+    // If there is a  Piece in the Left of the pawn Takes
+    if(context.read<DataArray>().getPiece(clampBorder(pieceData.index + 1), clampBorder(pieceData.letter - 1))[1] != "N"
+    && pieceData.index + 1 == index && pieceData.letter - 1 == letter){
+      print("possible to take");
+      return true;
+    }
+
+    // If there is a  Piece in the Right of the pawn Takes
+    if(context.read<DataArray>().getPiece(clampBorder(pieceData.index + 1), clampBorder(pieceData.letter + 1))[1] != "N"
+    && pieceData.index + 1 == index && pieceData.letter + 1 == letter){
+      print("possible to take");
+      return true;
+    }
+    
+    // If the pawn didn't move yet he can move two spaces
+    if(context.read<DataArray>().getPiece(clampBorder(pieceData.index + 2), pieceData.letter)[1] == "N"
+    && pieceData.index + 2 == index && pieceData.letter == letter && pieceData.index == 1){
+      print("possible to move two");
+      return true;
+    }
+
+     // Check if there is no Pieces ahead so the pawn can move forward
+    if(context.read<DataArray>().getPiece(clampBorder(pieceData.index + 1) , pieceData.letter )[1] == "N"
     && pieceData.index + 1 == index && pieceData.letter == letter){
       return true;
     }
@@ -213,13 +240,70 @@ bool checkforKnight(ChessPieceData pieceData , int index, int letter, BuildConte
       return true;
     }
   }
-  return false ;
-}
+  return false;
+  }
 //Todo: make Pawn Promotion functionality.
-//bool checkforPromotion()
+bool checkforPromotion(BuildContext context){
+  var firstRow = context.read<DataArray>().getData()[0];
+  var lastRow = context.read<DataArray>().getData()[7];
+  for(int i = 0; i < 8; i++){
+    if(firstRow[i][1] == "pW"){
+      return true;
+    }
+    if(lastRow[i][1] == "pB"){
+      return true;
+    }
+  }
+  return false;
+
+}
+void promote(BuildContext context){
+  // Check if there is a White Pawn in the end of the data array.
+  // If so determined in what letter index did the pawn exist.
+  // To Initialize a floatingPromotionMenu in the right position
+  // of the pawn. 
+  // This function will be check each time  a pawn move or a piece  move
+  // Then obtain the value of the selected piece and change it in the data
+  // Array.\
+  var firstRow = context.read<DataArray>().getData()[0];
+  var lastRow = context.read<DataArray>().getData()[7];
+  List<int> position = [];
+  for(int i =0; i < 8; i++){
+    if(firstRow[i][1] == "pW"){
+      position = [0, i];
+      Provider.of<GameController>(context, listen: false).changeWhiteMove();
+      Provider.of<WidgetOnScreen>(context, listen: false).setFloatingPromotionMenu(
+              position: position,   
+              whitePromotion: true);
+      
+    }
+    if(lastRow[i][1] == "pB"){
+      position =  [7, i];
+      Provider.of<GameController>(context, listen: false).changeBlackMove();
+      Provider.of<WidgetOnScreen>(context, listen: false).setFloatingPromotionMenu(
+              position: position, 
+              whitePromotion: false);
+    }
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+}
 
 // Execute all pieces checks in one Function 
 bool checkPieces(dynamic pieceData , int index, int letter, BuildContext context) {
+  if ( pieceData.index == index && pieceData.letter == letter) {
+      return false;
+    }
   if(checkforRook(pieceData, index, letter, context,false)){
     return true;
   }
@@ -230,6 +314,7 @@ bool checkPieces(dynamic pieceData , int index, int letter, BuildContext context
     return true;
   }
   if(checkforKing(pieceData, index, letter, context)){
+
     return true;
   }
   if(checkforPawn(pieceData, index, letter, context)){
