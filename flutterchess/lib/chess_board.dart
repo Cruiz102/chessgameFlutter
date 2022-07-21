@@ -35,7 +35,7 @@ class ChessRows extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(8, (letter) => Container(
-        color: xor(letter % 2 == 0 , index % 2 == 0 ) ?  const Color.fromARGB(255, 120, 207, 132) : Colors.white,
+        color: xor(letter % 2 == 0 , index % 2 == 0 ) ?  const Color.fromARGB(255, 118, 150, 86) :const Color.fromARGB(255, 238, 238, 210),
         width: 50,
         height: 50,
         child: ChessCell(index, letter),

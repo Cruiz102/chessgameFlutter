@@ -72,16 +72,42 @@ class WidgetOnScreen extends ChangeNotifier{
   }
 }
 
+
 class GameController extends ChangeNotifier{
+
+
   // _blackMove and _whiteMoves are gloabl variables.
   // with the purpose of controlling if the player can move or not.
   // These Variables were create to solve the problem when doing the promotion,
   // the player can't move any piece while the promotion menu is open.
    int _blackMove = 0;
    int _whiteMove = 1;
+   // inwhiteCheck and inblackCheck are booleans that tells us
+   // if the king's are in check.
+    bool inwhiteCheck = false;
+    bool inblackCheck = false;
+    // inCheckMate is a boolean that tells us if the player is in checkmate.
+    bool inCheckMate = false;
+    // inStalemate is a boolean that tells us if the player is in stalemate.
+    bool inStalemate = false;
+    // Put all the pieces that  that they trayectory is a possible check
+    List possibleChecks = [];
+
+    // Offsets variables when Grabbing a Piece. To change  his position 
+    // to the center of the mouse.
+    Offset _offsetX = Offset.zero;
+
 
   int get blackMove => _blackMove;
   int get whiteMove => _whiteMove;
+
+  //Offset get  offsetX => _offsetX;
+
+  Offset offset() {
+    
+    print(["This check is important",_offsetX]);
+    return _offsetX;
+  }
 
   void changeBlackMove(){
     _blackMove = _blackMove == 1 ? 0 : 1;
@@ -94,6 +120,11 @@ class GameController extends ChangeNotifier{
   void changeTurns(){
     _blackMove = _blackMove == 1 ? 0 : 1;
     _whiteMove = _whiteMove == 1 ? 0 : 1;
+    notifyListeners();
+  }
+  changeOffSet(Offset offset)  {
+    _offsetX = offset;
+    print(["x_delta" , offset]);
     notifyListeners();
   }
 }

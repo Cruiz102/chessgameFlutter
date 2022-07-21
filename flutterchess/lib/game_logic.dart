@@ -5,8 +5,6 @@ import 'package:provider/provider.dart';
 import'utils.dart';
 
 
-int border = 0;
-
 
 bool checkforRook(ChessPieceData pieceData , int index, int letter, BuildContext context, bool queen  ){
   if(pieceData.name == 'rW' || pieceData.name == 'rB'|| queen){
@@ -139,10 +137,6 @@ bool checkforPawn(ChessPieceData pieceData , int index, int letter, BuildContext
       print("same color");
       return false;
     }
-    // If there is a Pieces  in front cancel the move.
-    if(context.read<DataArray>().getPiece(clampBorder(pieceData.index -1) , pieceData.letter)[1] != "N"){
-      return false;
-    }
     // If there is a  Piece in the Left of the pawn Takes
     if(context.read<DataArray>().getPiece(clampBorder(pieceData.index - 1), clampBorder(pieceData.letter - 1))[1] != "N"
     && pieceData.index - 1 == index && pieceData.letter - 1 == letter){
@@ -151,7 +145,7 @@ bool checkforPawn(ChessPieceData pieceData , int index, int letter, BuildContext
     }
 
     // If there is a  Piece in the Right of the pawn Takes
-    if(context.read<DataArray>().getPiece(clampBorder(pieceData.index + 1), clampBorder(pieceData.letter + 1))[1] != "N"
+    if(context.read<DataArray>().getPiece(clampBorder(pieceData.index - 1), clampBorder(pieceData.letter + 1))[1] != "N"
     && pieceData.index - 1 == index && pieceData.letter + 1 == letter){
       print("possible to take");
       return true;
@@ -162,6 +156,10 @@ bool checkforPawn(ChessPieceData pieceData , int index, int letter, BuildContext
     && pieceData.index - 2 == index && pieceData.letter == letter && pieceData.index == 1){
       print("possible to move two");
       return true;
+    }
+        // If there is a Pieces  in front cancel the move.
+    if(context.read<DataArray>().getPiece(clampBorder(pieceData.index -1) , pieceData.letter)[1] != "N"){
+      return false;
     }
 
      // Check if there is no Pieces ahead so the pawn can move forward
@@ -174,10 +172,6 @@ bool checkforPawn(ChessPieceData pieceData , int index, int letter, BuildContext
        // Check if where is going to land there is not a piece from the same color
       if(context.read<DataArray>().getPiece(index, letter)[2] == pieceData.color ){
         print("same color");
-      return false;
-    }
-    // If there is a Pieces  in front cancel the move.
-    if(context.read<DataArray>().getPiece(clampBorder(pieceData.index +1) , pieceData.letter)[1] != "N"){
       return false;
     }
     // If there is a  Piece in the Left of the pawn Takes
@@ -199,6 +193,10 @@ bool checkforPawn(ChessPieceData pieceData , int index, int letter, BuildContext
     && pieceData.index + 2 == index && pieceData.letter == letter && pieceData.index == 1){
       print("possible to move two");
       return true;
+    }
+        // If there is a Pieces  in front cancel the move.
+    if(context.read<DataArray>().getPiece(clampBorder(pieceData.index +1) , pieceData.letter)[1] != "N"){
+      return false;
     }
 
      // Check if there is no Pieces ahead so the pawn can move forward

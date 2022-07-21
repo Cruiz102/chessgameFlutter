@@ -49,7 +49,10 @@ class MyHomePage extends StatelessWidget {
     // Add ChessBoard to the Body
 
     return Scaffold(
-      body: Stack(children: context.watch<WidgetOnScreen>().onScreen()),
+      appBar: AppBar(),
+      body: Container(
+        color: Colors.lightGreen.shade200,
+        child: Stack(children: context.read<WidgetOnScreen>().onScreen())),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Provider.of<DataArray>(context, listen: false).setData();

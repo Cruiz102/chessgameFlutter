@@ -6,37 +6,53 @@ import 'constant.dart';
 import 'package:provider/provider.dart';
 import'data.dart';
 import 'game_logic.dart';
+
 /// This class is maded so we can change the parameter maxSimultaneousDrags
 /// on the DragTarget inside the [ChessCell]. To build the DragTarget widget
 /// that correnspond with the turn and his pieceData color.
 
-class ColorDraggable extends StatelessWidget {
-    final  List chessCellData  ;
+class ColorDraggable extends StatefulWidget {
+   final  List chessCellData  ;
    final int index;
    final int letter;
    const ColorDraggable({Key? key,  required  this.chessCellData, required  this.index, required this.letter}) : super(key: key);
-  
-  
-//TODO: Remove the turn variable and substitute it with the Gamecontroller  Variables.
 
   @override
+  State<ColorDraggable> createState() => _ColorDraggableState();
+}
+
+class _ColorDraggableState extends State<ColorDraggable> {
+  @override
   Widget build(BuildContext context) {
+    
    late DragTarget piece ;
-      if (chessCellData[2] == "white"){
+      if (widget.chessCellData[2] == "white"){
         piece =  DragTarget<ChessPieceData>(
     builder: (BuildContext context,
      List<dynamic> candidateData, List<dynamic> rejectedData) {
       return
+          Listener(
+        onPointerDown: (details) => {
+          setState(() =>{
+      Provider.of<GameController>(context, listen: false).changeOffSet(details.localPosition)
+      } ),
+      },
+    child: 
        Draggable<ChessPieceData>(
         maxSimultaneousDrags: Provider.of<GameController>(context).whiteMove,
-      data: ChessPieceData( image:chessCellData[0], index: index, letter: letter, name: chessCellData[1], color: chessCellData[2]),
+      data: ChessPieceData( image:widget.chessCellData[0], index: widget.index, letter: widget.letter, name: widget.chessCellData[1], color: widget.chessCellData[2]),
       childWhenDragging: Container(
         color: const Color.fromARGB(255, 245, 230, 100),
         width: 50,
         height: 50,
       ),
-      onDragCompleted: () {
-        Provider.of<DataArray>(context, listen: false).setPiece(index, letter, N);
+      onDraggableCanceled: (details, q) {
+    
+        
+      },
+      onDragCompleted: ()  {
+        //Provider.of<GameController>(context, listen:false).changeOffSet(Offset.zero);
+        Provider.of<DataArray>(context, listen: false).setPiece(widget.index, widget.letter, N);
         // Set Turn opposite so the  other player can move his pieces
           if(checkforPromotion(context)){
             print("ok babe");
@@ -46,15 +62,22 @@ class ColorDraggable extends StatelessWidget {
           Provider.of<GameController>(context, listen: false).changeTurns();
         }
       },
-      feedback: Provider.of<DataArray>(context).getPiece(index, letter)[0],
-      child: Provider.of<DataArray>(context).getPiece(index, letter)[0],
-      );
+      dragAnchorStrategy: (Draggable<Object> draggable, BuildContext context, Offset position)
+       {return Offset(25,25);}
+,
+      feedback: Provider.of<DataArray>(context).getPiece(widget.index, widget.letter)[0]
+        ,
+
+      child:  Provider.of<DataArray>(context).getPiece(widget.index, widget.letter)[0],
+      )
+    );
   },
   onWillAccept: (data) {
-    return checkPieces(data, index, letter, context);
+    //print("whoos first");
+    return checkPieces(data, widget.index, widget.letter, context);
   },
   onAccept: (data) {
-    Provider.of<DataArray>(context, listen: false).setPiece(index, letter, [data.image, data.name, data.color]);
+    Provider.of<DataArray>(context, listen: false).setPiece(widget.index, widget.letter, [data.image, data.name, data.color]);
   },
   );
   }
@@ -66,14 +89,14 @@ class ColorDraggable extends StatelessWidget {
       return
        Draggable<ChessPieceData>(
       maxSimultaneousDrags: Provider.of<GameController>(context).blackMove,
-      data: ChessPieceData( image:chessCellData[0], index: index, letter: letter, name: chessCellData[1], color: chessCellData[2]),
+      data: ChessPieceData( image:widget.chessCellData[0], index: widget.index, letter: widget.letter, name: widget.chessCellData[1], color: widget.chessCellData[2]),
       childWhenDragging: Container(
         color: const Color.fromARGB(255, 245, 230, 100),
         width: 50,
         height: 50,
       ),
       onDragCompleted: () {
-        Provider.of<DataArray>(context, listen: false).setPiece(index, letter, N);
+        Provider.of<DataArray>(context, listen: false).setPiece(widget.index, widget.letter, N);
         // Set Turn opposite so the  other player can move his pieces
         if(checkforPromotion(context)){
           promote(context);
@@ -83,21 +106,24 @@ class ColorDraggable extends StatelessWidget {
           Provider.of<GameController>(context, listen: false).changeTurns();
         }
       },
-      feedback: Provider.of<DataArray>(context).getPiece(index, letter)[0],
-      child: Provider.of<DataArray>(context).getPiece(index, letter)[0],
+      dragAnchorStrategy: (Draggable<Object> draggable, BuildContext context, Offset position)
+       {return Offset(25,25);},
+      feedback: Provider.of<DataArray>(context).getPiece(widget.index, widget.letter)[0],
+      child: Provider.of<DataArray>(context).getPiece(widget.index, widget.letter)[0],
       );
   },
   onWillAccept: (data) {
-    return checkPieces(data, index, letter, context);
+    return checkPieces(data, widget.index, widget.letter, context);
   },
   onAccept: (data) {
-    Provider.of<DataArray>(context, listen: false).setPiece(index, letter, [data.image, data.name, data.color]);
+    Provider.of<DataArray>(context, listen: false).setPiece(widget.index, widget.letter, [data.image, data.name, data.color]);
   },
   );
   }
 
   
-    return piece;
+    return  piece;
+    
 }
 }
   

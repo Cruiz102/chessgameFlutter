@@ -1,11 +1,14 @@
 
 Monday:
-1. Make Pawn moves
-3. Make Enpassant functionality
-4. Make Castling functionality
+1. Make Pawn moves Check
+3. Make Enpassant functionality To later
+4. Make Castling functionality  To later
 
 Tuesday:
 1. UI of the game
 2. Make save  game system.
+3. make a Check system
 
 
+Wednesday:
+1. Hightlight all possible moves for each piece
