@@ -49,7 +49,7 @@ class FloatingPromotionMenu extends StatelessWidget {
       margin: const EdgeInsets.only(top:60),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: Color.fromARGB(255, 82, 215, 142),
+        color: const Color.fromARGB(255, 82, 215, 142),
         boxShadow:const [ BoxShadow(
           color: Color.fromARGB(131, 0, 0, 0),
           blurRadius: 10,

@@ -10,5 +10,6 @@ Tuesday:
 3. make a Check system
 
 
-Wednesday:
+Thursday:
 1. Hightlight all possible moves for each piece
+

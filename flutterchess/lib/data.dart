@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterchess/chess_board.dart';
 import 'constant.dart';
 import 'floating_promotion_menu.dart';
+import 'chess_piece_data.dart';
 
 
 
@@ -91,23 +92,23 @@ class GameController extends ChangeNotifier{
     // inStalemate is a boolean that tells us if the player is in stalemate.
     bool inStalemate = false;
     // Put all the pieces that  that they trayectory is a possible check
-    List possibleChecks = [];
+    List<ChessPieceData> _possibleWhiteChecks = [];
 
-    // Offsets variables when Grabbing a Piece. To change  his position 
-    // to the center of the mouse.
-    Offset _offsetX = Offset.zero;
+    List<ChessPieceData> _possibleBlackChecks = [];
+
+    // Variable that keeps track of King White Position on the table
+    List<int> kingWhitePosition = [];
+
+    // Variable that keeps track of King Black Position on the table
+    List<int> kingBlackPosition = [];
+
 
 
   int get blackMove => _blackMove;
   int get whiteMove => _whiteMove;
+  List get possibleWhiteChecks => _possibleWhiteChecks;
+  List get possibleBlackChecks => _possibleBlackChecks;
 
-  //Offset get  offsetX => _offsetX;
-
-  Offset offset() {
-    
-    print(["This check is important",_offsetX]);
-    return _offsetX;
-  }
 
   void changeBlackMove(){
     _blackMove = _blackMove == 1 ? 0 : 1;
@@ -122,9 +123,42 @@ class GameController extends ChangeNotifier{
     _whiteMove = _whiteMove == 1 ? 0 : 1;
     notifyListeners();
   }
-  changeOffSet(Offset offset)  {
-    _offsetX = offset;
-    print(["x_delta" , offset]);
+
+  void changeWhiteCheck(bool value){
+    inwhiteCheck = value;
+    notifyListeners();
+
+  }
+  void changeBlackCheck(bool value){
+    inblackCheck = value;
+    notifyListeners();
+
+  }
+  void updateKingPosition(String color, int index, int letter){
+    if(color == 'white'){
+      kingWhitePosition = [index,letter];
+    }
+    if(color == 'black'){
+      kingBlackPosition = [index,letter];
+    }
+  }
+  List<int> getKingPosition(String color){
+    if(color == 'white'){
+      return kingWhitePosition;
+    }
+    else{
+      return kingBlackPosition;
+    }
+
+  }
+  void pushPossibleCheck(ChessPieceData piece){
+    if(piece.color == 'white'){
+      _possibleWhiteChecks.add(piece);
+    }
+    else{
+      _possibleBlackChecks.add(piece);
+    }
     notifyListeners();
   }
+
 }
