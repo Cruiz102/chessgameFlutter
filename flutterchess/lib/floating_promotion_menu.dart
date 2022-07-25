@@ -12,7 +12,7 @@ class FloatingPromotionMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
   List<dynamic> value ;
-  Function deleteFloatingPromotion = context.watch<WidgetOnScreen>().deleteLast;
+  Function deleteFloatingPromotion = Provider.of<WidgetOnScreen>(context, listen: false).deleteLast;
   final List  whitePieceCollection = [kW,bW, rW, qW];
   final List blackPieceCollection = [kB,bB,rB,qB];
   List<Widget> whiteFloatingButtons = List<Widget>.generate(4, (index) =>
@@ -37,7 +37,6 @@ class FloatingPromotionMenu extends StatelessWidget {
                     deleteFloatingPromotion(),
                     Provider.of<GameController>(context, listen:false).changeBlackMove(),
                     Provider.of<GameController>(context, listen:false).changeTurns(),
-
                     Provider.of<DataArray>(context, listen:false).setPiece(position[0], position[1],value )
                    
     }
@@ -49,7 +48,7 @@ class FloatingPromotionMenu extends StatelessWidget {
       margin: const EdgeInsets.only(top:60),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: const Color.fromARGB(255, 82, 215, 142),
+        color: const  Color.fromARGB(255, 82, 215, 142),
         boxShadow:const [ BoxShadow(
           color: Color.fromARGB(131, 0, 0, 0),
           blurRadius: 10,

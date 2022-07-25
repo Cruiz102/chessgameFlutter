@@ -5,9 +5,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutterchess/data.dart';
-import 'package:flutterchess/floating_promotion_menu.dart';
 import 'package:provider/provider.dart';
-import 'chess_board.dart';
 
 // This is a reimplementation of the default Flutter application
 // using provider + [ChangeNotifier].
@@ -52,7 +50,7 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(),
       body: Container(
         color: Colors.lightGreen.shade200,
-        child: Stack(children: context.read<WidgetOnScreen>().onScreen())),
+        child: Stack(children: Provider.of<WidgetOnScreen>(context, listen:false).onScreen())),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Provider.of<DataArray>(context, listen: false).setData();

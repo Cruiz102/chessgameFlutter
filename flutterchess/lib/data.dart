@@ -60,8 +60,8 @@ class WidgetOnScreen extends ChangeNotifier{
 
   void setFloatingPromotionMenu({ required List<int> position, required bool whitePromotion}) {
     _onScreen.add(Positioned(
-      top: (position[0].toDouble()+1) * 50,
-      left: (position[1].toDouble()+ 1) * 50,
+      top: (position[0].toDouble()+1) ,
+      left: (position[1].toDouble()+ 1) ,
       child: FloatingPromotionMenu(whitePromotion: whitePromotion, position: position),
     ));
     notifyListeners();
@@ -92,17 +92,15 @@ class GameController extends ChangeNotifier{
     // inStalemate is a boolean that tells us if the player is in stalemate.
     bool inStalemate = false;
     // Put all the pieces that  that they trayectory is a possible check
-    List<ChessPieceData> _possibleWhiteChecks = [];
+     List<ChessPieceData> _possibleWhiteChecks = [];
 
-    List<ChessPieceData> _possibleBlackChecks = [];
+     List<ChessPieceData> _possibleBlackChecks = [];
 
     // Variable that keeps track of King White Position on the table
-    List<int> kingWhitePosition = [];
+    List<int> kingWhitePosition = [7,4];
 
     // Variable that keeps track of King Black Position on the table
-    List<int> kingBlackPosition = [];
-
-
+    List<int> kingBlackPosition = [0,4];
 
   int get blackMove => _blackMove;
   int get whiteMove => _whiteMove;
@@ -141,7 +139,11 @@ class GameController extends ChangeNotifier{
     if(color == 'black'){
       kingBlackPosition = [index,letter];
     }
+    notifyListeners();
   }
+  /// This function return the contrary of the color given.
+  /// This is because is used to check if the other player king
+  /// is in check.
   List<int> getKingPosition(String color){
     if(color == 'white'){
       return kingWhitePosition;

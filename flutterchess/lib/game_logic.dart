@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'data.dart';
 import 'package:provider/provider.dart';
 import'utils.dart';
+import 'package:vector_math/vector_math.dart';
 
 
 
@@ -134,27 +135,23 @@ bool checkforPawn(ChessPieceData pieceData , int index, int letter, BuildContext
   if(pieceData.name =="pW"){
            // Check if where is going to land there is not a piece from the same color
       if(context.read<DataArray>().getPiece(index, letter)[2] == pieceData.color ){
-      print("same color");
       return false;
     }
     // If there is a  Piece in the Left of the pawn Takes
     if(context.read<DataArray>().getPiece(clampBorder(pieceData.index - 1), clampBorder(pieceData.letter - 1))[1] != "N"
     && pieceData.index - 1 == index && pieceData.letter - 1 == letter){
-      print("possible to take");
       return true;
     }
 
     // If there is a  Piece in the Right of the pawn Takes
     if(context.read<DataArray>().getPiece(clampBorder(pieceData.index - 1), clampBorder(pieceData.letter + 1))[1] != "N"
     && pieceData.index - 1 == index && pieceData.letter + 1 == letter){
-      print("possible to take");
       return true;
     }
     
     // If the pawn didn't move yet he can move two spaces
     if(context.read<DataArray>().getPiece(clampBorder(pieceData.index - 2), pieceData.letter)[1] == "N"
     && pieceData.index - 2 == index && pieceData.letter == letter && pieceData.index == 6){
-      print("possible to move two");
       return true;
     }
         // If there is a Pieces  in front cancel the move.
@@ -171,27 +168,23 @@ bool checkforPawn(ChessPieceData pieceData , int index, int letter, BuildContext
   if(pieceData.name == "pB"){
        // Check if where is going to land there is not a piece from the same color
       if(context.read<DataArray>().getPiece(index, letter)[2] == pieceData.color ){
-        print("same color");
       return false;
     }
     // If there is a  Piece in the Left of the pawn Takes
     if(context.read<DataArray>().getPiece(clampBorder(pieceData.index + 1), clampBorder(pieceData.letter - 1))[1] != "N"
     && pieceData.index + 1 == index && pieceData.letter - 1 == letter){
-      print("possible to take");
       return true;
     }
 
     // If there is a  Piece in the Right of the pawn Takes
     if(context.read<DataArray>().getPiece(clampBorder(pieceData.index + 1), clampBorder(pieceData.letter + 1))[1] != "N"
     && pieceData.index + 1 == index && pieceData.letter + 1 == letter){
-      print("possible to take");
       return true;
     }
     
     // If the pawn didn't move yet he can move two spaces
     if(context.read<DataArray>().getPiece(clampBorder(pieceData.index + 2), pieceData.letter)[1] == "N"
     && pieceData.index + 2 == index && pieceData.letter == letter && pieceData.index == 1){
-      print("possible to move two");
       return true;
     }
         // If there is a Pieces  in front cancel the move.
@@ -276,9 +269,11 @@ bool checkforPromotion(BuildContext context){
   var lastRow = context.read<DataArray>().getData()[7];
   for(int i = 0; i < 8; i++){
     if(firstRow[i][1] == "pW"){
+      print(i);
       return true;
     }
     if(lastRow[i][1] == "pB"){
+      print(i);
       return true;
     }
   }
@@ -333,10 +328,24 @@ List allPossibleMoves(ChessPieceData piece, BuildContext context){
 }
 /// Intersection Test: for checks to the king.
 bool inCheck(ChessPieceData piece, BuildContext context){
-  List possibleMoves = allPossibleMoves(piece, context);
-  List<int> kingPosition = Provider.of<GameController>(context, listen: false).getKingPosition(piece.color);
-  if(possibleMoves.contains(kingPosition)){
-    return true;
+  List<Vector2> possibleMoves = allPossibleMoves(piece, context).map((e) => Vector2( e[0].toDouble(), e[1].toDouble() )).toList();
+  print(possibleMoves);
+  // We interchange the color Value because we want to identify
+  // if the King of the opposite color is in the possible moves of the piece.
+  if (piece.color == "white"){
+  List<int> kingPosition = Provider.of<GameController>(context, listen: false).getKingPosition("black");
+  print("king position: $kingPosition");
+  Vector2 kingPositionVector = Vector2(kingPosition[0].toDouble(),kingPosition[1].toDouble());
+  if(possibleMoves.contains(kingPositionVector)){
+    print("f");
+    return true;}
+  }
+  if (piece.color == "black"){
+  List<int> kingPosition = Provider.of<GameController>(context, listen: false).getKingPosition("white");
+  Vector2 kingPositionVector = Vector2(kingPosition[0].toDouble(), kingPosition[1].toDouble());
+   if(possibleMoves.contains(kingPositionVector)     ){
+    print("f");
+    return true;}
   }
 
   return false;
