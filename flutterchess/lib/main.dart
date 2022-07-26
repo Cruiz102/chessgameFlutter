@@ -50,7 +50,8 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(),
       body: Container(
         color: Colors.lightGreen.shade200,
-        child: Stack(children: Provider.of<WidgetOnScreen>(context, listen:false).onScreen())),
+        child: Consumer<WidgetOnScreen>(builder: (context, widget,d)=>
+         Stack(children: Provider.of<WidgetOnScreen>(context, listen:false).onScreen))),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Provider.of<DataArray>(context, listen: false).setData();
