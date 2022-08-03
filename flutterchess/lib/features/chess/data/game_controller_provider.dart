@@ -1,77 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutterchess/chess_board.dart';
-import 'constant.dart';
-import 'floating_promotion_menu.dart';
-import 'chess_piece_data.dart';
+import '/features/chess/repository/chess_piece_data.dart';
 
 
 
-class DataArray extends ChangeNotifier {
-  List<dynamic> _data = [
-    [rB,kB,bB,qB,kingB,bB,kB,rB],
-    [pB,pB,pB,pB,pB,pB,pB,pB],
-    [N,N,N,N,N,N,N,N],
-    [N,N,N,N,N,N,N,N],
-    [N,N,N,N,N,N,N,N],
-    [N,N,N,N,N,N,N,N],
-    [N,pW,pW,pW,pW,pW,pW,pW],
-    [rW,kW,bW,qW,kingW,bW,kW,rW],
-  ];
-   
-  List get data => _data;
-
-  List getData(){
-    return _data;
-  }
-  void setData() {
-    final List<List<List>> starting = [
-    [rB,kB,bB,qB,kingB,bB,kB,rB],
-    [pB,pB,pB,pB,pB,pB,pB,pB],
-    [N,N,N,N,N,N,N,N],
-    [N,N,N,N,N,N,N,N],
-    [N,N,N,N,N,N,N,N],
-    [N,N,N,N,N,N,N,N],
-    [pW,pW,pW,pW,pW,pW,pW,pW],
-    [rW,kW,bW,qW,kingW,bW,kW,rW],
-  ];
-    _data = starting;
-    notifyListeners();
-  }
-  List getPiece(int index, int letter) {
-
-    return _data[index][letter];
-  }
-  void setPiece(int index, int letter, dynamic value) {
-    _data[index][letter] = value;
-    notifyListeners();
-  }
-}
-
-class WidgetOnScreen extends ChangeNotifier{
-  // ignore: prefer_final_fields
-  List<Widget> _onScreen = [ChessBoard()];
-  List<Widget> onScreen(){
-    return _onScreen;
-  }
-  void addWidget(Widget widget){
-    _onScreen.add(widget);
-    notifyListeners();
-  }
-
-  void setFloatingPromotionMenu({ required List<int> position, required bool whitePromotion}) {
-    _onScreen.add(Positioned(
-      top: (position[0].toDouble()+1) ,
-      left: (position[1].toDouble()+ 1) ,
-      child: FloatingPromotionMenu(whitePromotion: whitePromotion, position: position),
-    ));
-    notifyListeners();
-
-  }
-  void deleteLast(){
-    _onScreen.removeAt(1);
-    notifyListeners();
-  }
-}
 
 
 class GameController extends ChangeNotifier{
@@ -85,8 +16,8 @@ class GameController extends ChangeNotifier{
    int _whiteMove = 1;
    // inwhiteCheck and inblackCheck are booleans that tells us
    // if the king's are in check.
-    bool inwhiteCheck = false;
-    bool inblackCheck = false;
+    bool _inWhiteCheck = false;
+    bool _inBlackCheck = false;
     // inCheckMate is a boolean that tells us if the player is in checkmate.
     bool inCheckMate = false;
     // inStalemate is a boolean that tells us if the player is in stalemate.
@@ -106,6 +37,8 @@ class GameController extends ChangeNotifier{
   int get whiteMove => _whiteMove;
   List get possibleWhiteChecks => _possibleWhiteChecks;
   List get possibleBlackChecks => _possibleBlackChecks;
+  bool get inWhiteCheck => _inWhiteCheck;
+  bool get inBlackCheck => _inBlackCheck;
 
 
   void changeBlackMove(){
@@ -123,12 +56,12 @@ class GameController extends ChangeNotifier{
   }
 
   void changeWhiteCheck(bool value){
-    inwhiteCheck = value;
+    _inWhiteCheck = value;
     notifyListeners();
 
   }
   void changeBlackCheck(bool value){
-    inblackCheck = value;
+    _inBlackCheck = value;
     notifyListeners();
 
   }
@@ -148,18 +81,24 @@ class GameController extends ChangeNotifier{
     if(color == 'white'){
       return kingWhitePosition;
     }
-    else{
+    if(color == 'black'){
       return kingBlackPosition;
     }
+    return [];
 
   }
   void pushPossibleCheck(ChessPieceData piece){
     if(piece.color == 'white'){
       _possibleWhiteChecks.add(piece);
     }
-    else{
+    if(piece.color == 'black'){
       _possibleBlackChecks.add(piece);
     }
+    notifyListeners();
+  }
+  void clearPossibleCheck(){
+    _possibleWhiteChecks.clear();
+    _possibleBlackChecks.clear();
     notifyListeners();
   }
 

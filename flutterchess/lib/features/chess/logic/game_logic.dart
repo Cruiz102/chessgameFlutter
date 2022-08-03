@@ -1,9 +1,11 @@
-import 'chess_piece_data.dart';
+import '../repository/chess_piece_data.dart';
 import 'package:flutter/material.dart';
-import 'data.dart';
+import 'package:flutterchess/features/chess/data/game_controller_provider.dart';
 import 'package:provider/provider.dart';
 import'utils.dart';
 import 'package:vector_math/vector_math.dart';
+import '../data/data_array_provider.dart';
+import 'package:flutterchess/features/main_window/data/widget_on_screen.dart';
 
 
 
@@ -182,8 +184,8 @@ bool checkforPawn(ChessPieceData pieceData , int index, int letter, BuildContext
       return true;
     }
     
-    // If the pawn didn't move yet he can move two spaces
-    if(context.read<DataArray>().getPiece(clampBorder(pieceData.index + 2), pieceData.letter)[1] == "N"
+     //If the pawn didn't move yet he can move two spaces
+    if(Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(pieceData.index + 2), pieceData.letter)[1] == "N"
     && pieceData.index + 2 == index && pieceData.letter == letter && pieceData.index == 1){
       return true;
     }
@@ -237,13 +239,13 @@ bool checkforKnight(ChessPieceData pieceData , int index, int letter, BuildConte
 
 
 // Execute all pieces checks in one Function 
-bool checkPieces(dynamic pieceData , int index, int letter, BuildContext context) {
+bool checkPieces(var pieceData , int index, int letter, BuildContext context) {
   if ( pieceData.index == index && pieceData.letter == letter) {
       return false;
     }
   if(checkforRook(pieceData, index, letter, context,false)){
     return true;
-  }
+  } 
   if(checkforBishop(pieceData, index, letter, context, false)){
     return true;
   }
@@ -297,7 +299,8 @@ void promote(BuildContext context){
       Provider.of<GameController>(context, listen: false).changeWhiteMove();
       Provider.of<WidgetOnScreen>(context, listen: false).setFloatingPromotionMenu(
               position: position,   
-              whitePromotion: true);
+              whitePromotion: true,
+              context:context);
       
     }
     if(lastRow[i][1] == "pB"){
@@ -305,7 +308,8 @@ void promote(BuildContext context){
       Provider.of<GameController>(context, listen: false).changeBlackMove();
       Provider.of<WidgetOnScreen>(context, listen: false).setFloatingPromotionMenu(
               position: position, 
-              whitePromotion: false);
+              whitePromotion: false,
+              context:context);
     }
 
   }
@@ -329,27 +333,28 @@ List allPossibleMoves(ChessPieceData piece, BuildContext context){
 /// Intersection Test: for checks to the king.
 bool inCheck(ChessPieceData piece, BuildContext context){
   List<Vector2> possibleMoves = allPossibleMoves(piece, context).map((e) => Vector2( e[0].toDouble(), e[1].toDouble() )).toList();
-  print(possibleMoves);
+ // print(possibleMoves);
   // We interchange the color Value because we want to identify
   // if the King of the opposite color is in the possible moves of the piece.
   if (piece.color == "white"){
   List<int> kingPosition = Provider.of<GameController>(context, listen: false).getKingPosition("black");
-  print("king position: $kingPosition");
+ // print("king position: $kingPosition");
   Vector2 kingPositionVector = Vector2(kingPosition[0].toDouble(),kingPosition[1].toDouble());
   if(possibleMoves.contains(kingPositionVector)){
-    print("f");
+    print("fbool");
     return true;}
   }
   if (piece.color == "black"){
   List<int> kingPosition = Provider.of<GameController>(context, listen: false).getKingPosition("white");
   Vector2 kingPositionVector = Vector2(kingPosition[0].toDouble(), kingPosition[1].toDouble());
    if(possibleMoves.contains(kingPositionVector)     ){
-    print("f");
+    print("fwifeb");
     return true;}
   }
 
   return false;
 }
+//TODO: This function do not return the correct List of possibles Checks but Now I think it does. Need to check.
 
 void checkPosibleCheck(String color, BuildContext context){
   //Look for the king of the current player.
@@ -403,7 +408,7 @@ void checkPosibleCheck(String color, BuildContext context){
     //Checks the UP Right Diagonal of the king. Checking for Black Bishop and Queens.
     if((Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),clampBorder(king[1] + i) )[1] == "bB"||
        Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),clampBorder(king[1] + i) )[1] == "qB")&&
-       king[0] + i > 8 || king[1] + i > 8  ){
+      ( king[0] + i > 8 || king[1] + i > 8 ) ){
       List possiblePiece = Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),clampBorder(king[1] + i) );
       ChessPieceData piece = ChessPieceData(image:possiblePiece[0],name: possiblePiece[1],
                                   color: possiblePiece[2], index: king[0]+i, letter: king[1]+i);
@@ -414,7 +419,7 @@ void checkPosibleCheck(String color, BuildContext context){
     //Checks the UP Left Diagonal of the king. Checking for Black Bishop and Queens.
     if((Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),clampBorder(king[1] - i) )[1] == "bB"||
        Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),clampBorder(king[1] - i) )[1] == "qB")&&
-       king[0] + i > 8 || king[1] - i < 0  ){
+       (king[0] + i > 8 || king[1] - i < 0)  ){
       List possiblePiece = Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),clampBorder(king[1] - i) );
       ChessPieceData piece = ChessPieceData(image:possiblePiece[0],name: possiblePiece[1],
                                   color: possiblePiece[2], index: king[0]+i, letter: king[1]-i);
@@ -424,7 +429,7 @@ void checkPosibleCheck(String color, BuildContext context){
     //Checks the DOWN Right Diagonal of the king. Checking for Black Bishop and Queens.
     if((Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i),clampBorder(king[1] + i) )[1] == "bB"||
        Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i),clampBorder(king[1] + i) )[1] == "qB")&&
-       king[0] - i < 0 || king[1] + i > 8  ){
+       (king[0] - i < 0 || king[1] + i > 8)  ){
       List possiblePiece = Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i),clampBorder(king[1] + i) );
       ChessPieceData piece = ChessPieceData(image:possiblePiece[0],name: possiblePiece[1],
                                   color: possiblePiece[2], index: king[0]-i, letter: king[1]+i);
@@ -434,7 +439,7 @@ void checkPosibleCheck(String color, BuildContext context){
     //Checks the DOWN Left Diagonal of the king. Checking for Black Bishop and Queens.
     if((Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i),clampBorder(king[1] - i) )[1] == "bB"||
        Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i),clampBorder(king[1] - i) )[1] == "qB")&&
-       king[0] - i < 0 || king[1] - i < 0  ){
+       (king[0] - i < 0 || king[1] - i < 0)  ){
       List possiblePiece = Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i),clampBorder(king[1] - i) );
       ChessPieceData piece = ChessPieceData(image:possiblePiece[0],name: possiblePiece[1],
                                   color: possiblePiece[2], index: king[0]- i, letter: king[1] - i);
@@ -445,42 +450,44 @@ void checkPosibleCheck(String color, BuildContext context){
 
   }
   }
-  else{
+  if(color == "black"){
+    print("king pos: $king");
     for (int i = 1; i < 8; i++){
-      // Checks the UP of the king. Checking for White Rooks and Queens.
+      // Checks the Down of the king. Checking for White Rooks and Queens.
       if((Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),king[1] )[1] == "rW"||
          Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),king[1] )[1] == "qW")&&
-         king[0] + i > 8  ){
+         king[0] + i < 8  ){
         List possiblePiece = Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),king[1] );
         ChessPieceData piece = ChessPieceData(image:possiblePiece[0],name: possiblePiece[1],
-                                    color: possiblePiece[2], index: (king[0] + 1), letter: king[1]);
+                                    color: possiblePiece[2], index: clampBorder(king[0] + i), letter: king[1]);
         // Push Piece to the possiblesCheck list.
+        print("index sa:${piece.index}");
         Provider.of<GameController>(context, listen: false).pushPossibleCheck(piece);
       }
-      // Checks the DOWN of the king. Checking for White Rooks and Queens.
+      // Checks the UP of the king. Checking for White Rooks and Queens.
       if((Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i),king[1] )[1] == "rW"||
          Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i),king[1] )[1] == "qW")&&
-         king[0] - i < 0  ){
+         king[0] - i > 0  ){
         List possiblePiece = Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i),king[1] );
         ChessPieceData piece = ChessPieceData(image:possiblePiece[0],name: possiblePiece[1],
                                     color: possiblePiece[2], index: king[0]-i, letter: king[1]);
         // Push Piece to the possiblesCheck list.
         Provider.of<GameController>(context, listen: false).pushPossibleCheck(piece);
       }
-      // Checks the LEFT of the king. Checking for White Rooks and Queens
+      // Checks the Right of the king. Checking for White Rooks and Queens
       if((Provider.of<DataArray>(context, listen: false).getPiece(king[0],clampBorder(king[1] + i))[1] == "rW"||
-         Provider.of<DataArray>(context, listen: false).getPiece(king[0],king[1] + i)[1] == "qW")&&
-         king[1] + i > 8  ){
+         Provider.of<DataArray>(context, listen: false).getPiece(king[0],clampBorder(king[1] + i))[1] == "qW")&&
+         king[1] + i < 8  ){
         List possiblePiece = Provider.of<DataArray>(context, listen: false).getPiece(king[0],clampBorder(king[1] + i));
         ChessPieceData piece = ChessPieceData(image:possiblePiece[0],name: possiblePiece[1],
-                                    color: possiblePiece[2], index: king[0], letter: (king[1] + 1));
+                                    color: possiblePiece[2], index: king[0], letter: (king[1] + i));
         // Push Piece to the possiblesCheck list.
         Provider.of<GameController>(context, listen: false).pushPossibleCheck(piece);
       }
-      // Checks the RIGHT of the king. Checking for White Rooks and Queens.
+      // Checks the Left of the king. Checking for White Rooks and Queens.
       if((Provider.of<DataArray>(context, listen: false).getPiece(king[0],clampBorder(king[1] - i))[1] == "rW"||
          Provider.of<DataArray>(context, listen: false).getPiece(king[0],clampBorder(king[1] - i))[1] == "qW")&&
-         king[1] - i < 0  ){
+         king[1] - i > 0  ){
         List possiblePiece = Provider.of<DataArray>(context, listen: false).getPiece(king[0],clampBorder(king[1] - i));
         ChessPieceData piece = ChessPieceData(image:possiblePiece[0],name: possiblePiece[1],
                                     color: possiblePiece[2], index: king[0], letter: king[1]-i);
@@ -488,42 +495,44 @@ void checkPosibleCheck(String color, BuildContext context){
         Provider.of<GameController>(context, listen: false).pushPossibleCheck(piece);
       }
       //Checks the UP Right Diagonal of the king. Checking for White Bishop and Queens.
-      if((Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),clampBorder(king[1] + i))[1] == "bW"||
-         Provider.of<DataArray>(context, listen: false).getPiece(king[0] + i,king[1] + i)[1] == "qW")&&
-         king[0] + i > 8 || king[1] + i > 8  ){
+      if((Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i),clampBorder(king[1] + i))[1] == "bW"||
+         Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i),clampBorder(king[1] + i))[1] == "qW")&&
+        ( king[0] + i > 8 || king[1] + i > 8 ) ){
         List possiblePiece = Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),clampBorder(king[1] + i));
         ChessPieceData piece = ChessPieceData(image:possiblePiece[0],name: possiblePiece[1],
-                                    color: possiblePiece[2], index: (king[0] + 1), letter: (king[1] + 1));
+                                    color: possiblePiece[2], index: (king[0] + i), letter: (king[1] + i));
         // Push Piece to the possiblesCheck list.
         Provider.of<GameController>(context, listen: false).pushPossibleCheck(piece);
       }
       //Checks the UP Left Diagonal of the king. Checking for White Bishop and Queens.
-      if((Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),clampBorder(king[1] - i))[1] == "bW"||
-         Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),clampBorder(king[1] - i))[1] == "qW")&&
-         king[0] + i > 8 || king[1] - i < 0  ){
+      if((Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i),clampBorder(king[1] - i))[1] == "bW"||
+         Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i),clampBorder(king[1] - i))[1] == "qW")&&
+         (king[0] + i < 8 || king[1] - i > 0)  ){
         List possiblePiece = Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),clampBorder(king[1] - i));
         ChessPieceData piece = ChessPieceData(image:possiblePiece[0],name: possiblePiece[1],
-                                    color: possiblePiece[2], index: (king[0] + 1), letter: (king[1] - 1));
+                                    color: possiblePiece[2], index: (king[0] + i), letter: (king[1] - i));
         // Push Piece to the possiblesCheck list.
         Provider.of<GameController>(context, listen: false).pushPossibleCheck(piece);
       }
       //Checks the DOWN Right Diagonal of the king. Checking for White Bishop and Queens.
-      if((Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i),clampBorder(king[1] + i))[1] == "bW"||
-         Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i), clampBorder(king[1] + i))[1] == "qW")&&
-         king[0] - i < 0 || king[1] + i > 8  ){
+      if((Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),clampBorder(king[1] + i))[1] == "bW"||
+         Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i), clampBorder(king[1] + i))[1] == "qW")&&
+        ( king[0] - i > 0 && king[1] + i < 8 ) ){
         List possiblePiece = Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i), clampBorder(king[1] + i));
         ChessPieceData piece = ChessPieceData(image:possiblePiece[0],name: possiblePiece[1],
-                                    color: possiblePiece[2], index: king[0]-i, letter: (king[1] + 1));
+                                    color: possiblePiece[2], index: clampBorder(king[0]-i), letter: clampBorder(king[1] + i));
+        print("${piece.name}, ${piece.index}, ${piece.letter}");
         // Push Piece to the possiblesCheck list.
         Provider.of<GameController>(context, listen: false).pushPossibleCheck(piece);
       }
       //Checks the DOWN Left Diagonal of the king. Checking for White Bishop and Queens.
-      if((Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i),clampBorder(king[1] - i))[1] == "bW"||
-         Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i),clampBorder(king[1] - i))[1] == "qW")&&
-         king[0] - i < 0 || king[1] - i < 0  ){
+      if((Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),clampBorder(king[1] - i))[1] == "bW"||
+         Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),clampBorder(king[1] - i))[1] == "qW")&&
+        ( king[0] - i > 0 && king[1] - i > 0 ) ){
         List possiblePiece = Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i),clampBorder(king[1] - i));
         ChessPieceData piece = ChessPieceData(image:possiblePiece[0],name: possiblePiece[1],
                                     color: possiblePiece[2], index: king[0]-i, letter: king[1]-i);
+        print("${piece.name}, ${piece.index}, ${piece.letter}");
         // Push Piece to the possiblesCheck list.
         Provider.of<GameController>(context, listen: false).pushPossibleCheck(piece);
       }
@@ -539,24 +548,39 @@ void checkPosibleCheck(String color, BuildContext context){
   }
 
 
-
-void checkForWhiteChecks(BuildContext context){
+// We change it to bool because we dont want to change the  BlackcheckValue yet.
+bool checkForWhiteChecks(BuildContext context, bool value){
   List possibleChecks = Provider.of<GameController>(context, listen: false).possibleWhiteChecks;
   for(int i = 0; i < possibleChecks.length; i++){
      if(inCheck(possibleChecks[i], context)){
-       Provider.of<GameController>(context, listen: false).changeWhiteCheck(true);
+       return true;//Provider.of<GameController>(context, listen: false).changeWhiteCheck(value);
        }
   }
+  return false;
 
 }
-void checkForBlackChecks(BuildContext context){
+bool checkForBlackChecks(BuildContext context , bool value){
   List possibleChecks = Provider.of<GameController>(context, listen: false).possibleBlackChecks;
   for(int i = 0; i < possibleChecks.length; i++){
     if(inCheck(possibleChecks[i], context)){
-      Provider.of<GameController>(context, listen: false).changeBlackCheck(true);
+      return true;//Provider.of<GameController>(context, listen: false).changeBlackCheck(value);
       }
   }
+  return false;
 
 }
-
-
+// Must be bool because  if in this play the king is not in check.
+//The player can move.
+void stillInCheck(var piece, BuildContext context){
+  checkPosibleCheck(piece.color, context);
+  if(Provider.of<GameController>(context, listen: false).inWhiteCheck){
+    if(piece.color == "black"){
+      checkForBlackChecks(context, false);
+    }
+  }
+  if(Provider.of<GameController>(context, listen: false).inBlackCheck){
+      print(" hola gente${piece.color}");
+      checkForBlackChecks(context, false);
+    
+  }
+}

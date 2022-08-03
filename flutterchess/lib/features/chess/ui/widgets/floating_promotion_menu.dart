@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'constant.dart';
+import '../../../chess/data/constant.dart';
 import 'package:provider/provider.dart';
-import 'data.dart';
+import 'package:flutterchess/features/chess/data/game_controller_provider.dart';
+import 'package:flutterchess/features/main_window/data/widget_on_screen.dart';
+import '../../data/data_array_provider.dart';
 
 /// This is the Floating Promotion menu when a pawn promotes.
 /// This take a boolean whitePromotions
@@ -25,6 +27,7 @@ class FloatingPromotionMenu extends StatelessWidget {
                     Provider.of<GameController>(context, listen:false).changeWhiteMove(),
                     Provider.of<GameController>(context, listen:false).changeTurns(),
                     Provider.of<DataArray>(context, listen:false).setPiece(position[0], position[1],value )
+
                     }
   ));
     List<Widget> blackFloatingButtons = List<Widget>.generate(4, (index) =>

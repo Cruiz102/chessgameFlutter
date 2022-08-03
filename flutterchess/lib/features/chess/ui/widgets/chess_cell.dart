@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutterchess/data.dart';
+import 'package:flutterchess/features/chess/data/data_array_provider.dart';
 import 'color_draggable.dart';
 
 class ChessCell extends StatelessWidget {
@@ -11,7 +11,7 @@ class ChessCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final chessCellData = Provider.of<DataArray>(context).getPiece(index, letter);
+    var chessCellData = Provider.of<DataArray>(context).getPiece(index, letter);
     var draggable = ColorDraggable(chessCellData : chessCellData,index : index, letter: letter);
     return draggable;
     

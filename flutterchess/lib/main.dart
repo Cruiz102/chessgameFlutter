@@ -4,8 +4,11 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:flutterchess/data.dart';
 import 'package:provider/provider.dart';
+import 'features/chess/data/data_array_provider.dart';
+import 'package:flutterchess/features/main_window/data/widget_on_screen.dart';
+import 'package:flutterchess/features/chess/data/game_controller_provider.dart';
+
 
 // This is a reimplementation of the default Flutter application
 // using provider + [ChangeNotifier].
@@ -13,6 +16,7 @@ void main() {
   runApp(
     // Providers are above [MyApp] instead of inside it, so that
     // tests can use [MyApp] while mocking the providers
+  
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => DataArray()),

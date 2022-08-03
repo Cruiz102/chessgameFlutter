@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'chess_cell.dart';
+import '../widgets/chess_cell.dart';
+import 'package:provider/provider.dart';
+import '../../data/data_array_provider.dart';
 
 
 // ignore: use_key_in_widget_constructors
@@ -9,9 +11,12 @@ class ChessBoard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return 
-    Column(
+        MultiProvider(
+      providers: [ChangeNotifierProvider(create: (context) => DataArray())],
+      child:Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: chessRows
+      )
       );
   }
 }
@@ -37,7 +42,7 @@ class ChessRows extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(8, (letter) => Container(
         decoration:BoxDecoration(
-          color: xor(letter % 2 == 0 , index % 2 == 0 ) ?  const Color.fromARGB(255, 118, 150, 86) :const Color.fromARGB(255, 238, 238, 210),
+          color: xor(letter % 2 == 0 , index % 2 == 0 ) ? const Color.fromARGB(255, 238, 238, 210): const Color.fromARGB(255, 118, 150, 86),
  
         ),
         width: 50,
