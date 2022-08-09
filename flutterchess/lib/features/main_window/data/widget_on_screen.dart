@@ -19,7 +19,6 @@ class WidgetOnScreen extends ChangeNotifier{
       left:  (MediaQuery.of(context).size.width/ 2) + (position[1].toDouble() * 50) - 200,
       child: FloatingPromotionMenu(whitePromotion: whitePromotion, position: position),
     ));
-    print(_onScreen);
     notifyListeners();
 
   }

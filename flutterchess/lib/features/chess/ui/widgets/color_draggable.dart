@@ -68,19 +68,19 @@ class _ColorDraggableState extends State<ColorDraggable> {
       dragAnchorStrategy: (Draggable<Object> draggable, BuildContext context, Offset position)
        {return const Offset(25,25);}
 ,
-      feedback: Provider.of<DataArray>(context).getPiece(widget.index, widget.letter)[0]
+      feedback: Provider.of<DataArray>(context).getPiece(widget.index, widget.letter,false)[0]
         ,
 
-      child:  Provider.of<DataArray>(context).getPiece(widget.index, widget.letter)[0],
+      child:  Provider.of<DataArray>(context).getPiece(widget.index, widget.letter,false)[0],
       );
   },
   onWillAccept: (data) {
     //clear the possible checks each time a piece is dragged
     Provider.of<GameController>(context, listen: false).clearPossibleCheck();
-    stillInCheck(data,context);
-    bool canMove = checkPieces(data, widget.index, widget.letter, context) 
-                  && !Provider.of<GameController>(context, listen:false).inWhiteCheck;
-    print(canMove);
+    bool canMove = checkPieces(data, widget.index, widget.letter, context,true) 
+                  && !stillInCheck(data, context, widget.index, widget.letter, true);
+    print("Can Move can move :?$canMove");
+    print("biiiignslngf");
     return canMove;
   },
   onAccept: (data) {
@@ -99,7 +99,8 @@ class _ColorDraggableState extends State<ColorDraggable> {
     }
     // Set Check if the opposite king is in check
     var newPiece = ChessPieceData(index:widget.index,letter: widget.letter, image:data.image,name: data.name, color:data.color);
-      if(inCheck(newPiece, context)){
+    List currentKingPosition = Provider.of<GameController>(context, listen:false).kingBlackPosition;
+      if(inCheck(newPiece, context, false)){
         print(widget.chessCellData[2]);
       Provider.of<GameController>(context, listen: false).changeBlackCheck(true);
       print("Black Check ${Provider.of<GameController>(context, listen: false).inBlackCheck}");
@@ -127,15 +128,16 @@ class _ColorDraggableState extends State<ColorDraggable> {
       ),
       dragAnchorStrategy: (Draggable<Object> draggable, BuildContext context, Offset position)
        {return const Offset(28,28);},
-      feedback: Provider.of<DataArray>(context).getPiece(widget.index, widget.letter)[0],
-      child: Provider.of<DataArray>(context).getPiece(widget.index, widget.letter)[0],
+      feedback: Provider.of<DataArray>(context).getPiece(widget.index, widget.letter,false)[0],
+      child: Provider.of<DataArray>(context).getPiece(widget.index, widget.letter,false)[0],
       );
   },
   onWillAccept: (data) {
-    //TODO: add still in check in this part too.
-   // stillInCheck(data,context);
-   // bool canMove = checkPieces(data, widget.index, widget.letter, context) && Provider.of<GameController>(context, listen: false).inBlackCheck;
-    return checkPieces(data, widget.index, widget.letter, context) ; 
+    Provider.of<GameController>(context, listen: false).clearPossibleCheck();
+    bool canMove = checkPieces(data, widget.index, widget.letter, context,true) 
+                  && !stillInCheck(data, context, widget.index, widget.letter,true);
+    print(canMove);
+    return canMove; 
   },
   onAccept: (data) {
     //Set Piece to the new position
@@ -150,9 +152,10 @@ class _ColorDraggableState extends State<ColorDraggable> {
     Provider.of<GameController>(context, listen: false).changeTurns();
     }
     // Set Check if the opposite king is in check
-    var datainfo = Provider.of<DataArray>(context, listen: false).getPiece(widget.index, widget.letter);
+    var datainfo = Provider.of<DataArray>(context, listen: false).getPiece(widget.index, widget.letter,false);
     var newPiece = ChessPieceData(image:datainfo[0], name:datainfo[1], color:datainfo[2], index:widget.index, letter: widget.letter);
-      if(inCheck(newPiece, context)){
+    List currentKingPosition = Provider.of<GameController>(context, listen:false).kingWhitePosition;
+      if(inCheck(newPiece, context,false)){
       Provider.of<GameController>(context, listen: false).changeWhiteCheck(true);
       print("White ${Provider.of<GameController>(context, listen: false).inWhiteCheck}");
     }
@@ -183,19 +186,37 @@ class _ColorDraggableState extends State<ColorDraggable> {
       feedback: widget.chessCellData[0],
        child: widget.chessCellData[0],);
 },
-//TODO: Something is wrong in the stillIn Check function. It does not return the correct possiblesCheck
+
 
 
 onWillAccept: (data) {
   //clear Possibnles
+  //TODO: The Idea will be the following. We will make a mockDataArray to check if there is
+  // some check with the next move. The function onWillAccept will be working with the MockdataArray
+  // The MockDataArray will be changing each time onWillAccpet is called. The OriginalDataArray
+  // will be modified once there ins't a check in the on the MockedDataArray. Then the Original
+  //will be set to the MokedDataArray. In the case there is a check in the MokDataArray it will
+  // be set to the Original. and we will not permit return True on onWillAccept.
+
+
+
+  //check this doesnt work. A possible solution is to check if the data piece that we are moving is the king.
+  // to use the current implementation but if not we have to get the KingPosition variable of the GameController
+  // Provider and check if the king is still on check.
+
   Provider.of<GameController>(context, listen: false).clearPossibleCheck();
-    stillInCheck(data,context);
+  
+  //Provider.of<DataArray>(context, listen:false).setMockPiece(widget.index, widget.letter, [data!.image,data.name,data.color]);
+    bool canMove = checkPieces(data, widget.index, widget.letter, context,true) 
+                  && !stillInCheck(data, context, widget.index, widget.letter,true);
+    if(!canMove){
+     // Provider.of<DataArray>(context, listen:false).redoMockData();
+    }
+    print('can Move can Move:$canMove');
     print("black ${Provider.of<GameController>(context, listen: false).inBlackCheck}");
-    print("${Provider.of<GameController>(context, listen: false).possibleWhiteChecks.map((e) => [e.index, e.letter, e.color, e.name]).toList()}");
-    bool canMove = checkPieces(data, widget.index, widget.letter, context) 
-                  && !Provider.of<GameController>(context, listen:false).inBlackCheck;
-    print(canMove);
-    return canMove;},
+    print("${Provider.of<GameController>(context, listen: false).possibleBlackChecks.map((e) => [e.index, e.letter, e.color, e.name]).toList()}");
+    return canMove;
+    },
 onAccept: (data){
      //Set Piece to the new position
     Provider.of<DataArray>(context, listen: false).setPiece(widget.index, widget.letter, [data.image, data.name, data.color]);
@@ -209,14 +230,19 @@ onAccept: (data){
     Provider.of<GameController>(context, listen: false).changeTurns();
     }
     // Set Check if the opposite king is in check
-    var datainfo = Provider.of<DataArray>(context, listen: false).getPiece(widget.index, widget.letter);
+    //Opposite kings Position.
+    //TODO: This implementation will be change with the MokedDataArray feature.
+    // This will make the comparations more cleaner, or at least that is what I hope.
+    var datainfo = Provider.of<DataArray>(context, listen: false).getPiece(widget.index, widget.letter,false);
     var newPiece = ChessPieceData(image:datainfo[0], name:datainfo[1], color:datainfo[2], index:widget.index, letter: widget.letter);
-      if(inCheck(newPiece, context) && newPiece.color == "white"){
+    List currentKingBlackPosition = Provider.of<GameController>(context, listen:false).kingBlackPosition;
+      if(inCheck(newPiece, context,false) && newPiece.color == "white"){
       Provider.of<GameController>(context, listen: false).changeBlackCheck(true);
       print("black ${Provider.of<GameController>(context, listen: false).inBlackCheck}");
       Provider.of<GameController>(context, listen: false).pushPossibleCheck(newPiece);
     }
-    if(inCheck(newPiece, context) && newPiece.color == "black"){
+    List currentKingWhitePosition = Provider.of<GameController>(context, listen:false).kingWhitePosition;
+    if(inCheck(newPiece, context,false) && newPiece.color == "black"){
         Provider.of<GameController>(context, listen: false).changeWhiteCheck(true);
       print("white ${Provider.of<GameController>(context, listen: false).inWhiteCheck}");
       Provider.of<GameController>(context, listen: false).pushPossibleCheck(newPiece);

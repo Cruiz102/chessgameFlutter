@@ -54,11 +54,12 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(),
       body: Container(
         color: Colors.lightGreen.shade200,
-        child: Consumer<WidgetOnScreen>(builder: (context, widget,d)=>
+        child: Consumer<WidgetOnScreen>(builder: (context, widgetProvider, child)=>
          Stack(children: Provider.of<WidgetOnScreen>(context, listen:false).onScreen))),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Provider.of<DataArray>(context, listen: false).setData();
+          Provider.of<GameController>(context,listen:false).restartPosition();
         },
         child: const Icon(Icons.clear),
       ),

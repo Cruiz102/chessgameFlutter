@@ -11,7 +11,8 @@ class ChessCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var chessCellData = Provider.of<DataArray>(context).getPiece(index, letter);
+    //isMock in here is false
+    var chessCellData = Provider.of<DataArray>(context, listen:false).getPiece(index, letter,false);
     var draggable = ColorDraggable(chessCellData : chessCellData,index : index, letter: letter);
     return draggable;
     

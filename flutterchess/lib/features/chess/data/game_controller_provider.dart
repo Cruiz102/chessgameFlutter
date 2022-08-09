@@ -40,7 +40,20 @@ class GameController extends ChangeNotifier{
   bool get inWhiteCheck => _inWhiteCheck;
   bool get inBlackCheck => _inBlackCheck;
 
+// Restart all the game Variables.
+  void restartPosition(){
 
+    _blackMove = 0;
+    _whiteMove = 1;
+    _inWhiteCheck = false;
+    _inBlackCheck = false;
+    inCheckMate = false;
+    _possibleWhiteChecks = [];
+    _possibleBlackChecks = [];
+    kingWhitePosition = [7,4];
+    kingBlackPosition = [0,4];
+
+  }
   void changeBlackMove(){
     _blackMove = _blackMove == 1 ? 0 : 1;
     notifyListeners();
@@ -89,10 +102,12 @@ class GameController extends ChangeNotifier{
   }
   void pushPossibleCheck(ChessPieceData piece){
     if(piece.color == 'white'){
-      _possibleWhiteChecks.add(piece);
+      print("YESS");
+      _possibleBlackChecks.add(piece);
     }
     if(piece.color == 'black'){
-      _possibleBlackChecks.add(piece);
+      print("YESSS");
+      _possibleWhiteChecks.add(piece);
     }
     notifyListeners();
   }
