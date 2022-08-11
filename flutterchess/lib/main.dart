@@ -56,7 +56,8 @@ class MyHomePage extends StatelessWidget {
         color: Colors.lightGreen.shade200,
         child: Consumer<WidgetOnScreen>(builder: (context, widgetProvider, child)=>
          Stack(children: Provider.of<WidgetOnScreen>(context, listen:false).onScreen))),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: 
+      FloatingActionButton(
         onPressed: () {
           Provider.of<DataArray>(context, listen: false).setData();
           Provider.of<GameController>(context,listen:false).restartPosition();

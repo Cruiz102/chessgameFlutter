@@ -3,8 +3,6 @@ import '/features/chess/repository/chess_piece_data.dart';
 
 
 
-
-
 class GameController extends ChangeNotifier{
 
 
@@ -29,9 +27,11 @@ class GameController extends ChangeNotifier{
 
     // Variable that keeps track of King White Position on the table
     List<int> kingWhitePosition = [7,4];
+    List<int> mockKingWhite = [7,4];
 
     // Variable that keeps track of King Black Position on the table
     List<int> kingBlackPosition = [0,4];
+    List<int> mockKingBlack = [0,4];
 
   int get blackMove => _blackMove;
   int get whiteMove => _whiteMove;
@@ -81,6 +81,7 @@ class GameController extends ChangeNotifier{
   void updateKingPosition(String color, int index, int letter){
     if(color == 'white'){
       kingWhitePosition = [index,letter];
+      
     }
     if(color == 'black'){
       kingBlackPosition = [index,letter];
@@ -90,7 +91,13 @@ class GameController extends ChangeNotifier{
   /// This function return the contrary of the color given.
   /// This is because is used to check if the other player king
   /// is in check.
-  List<int> getKingPosition(String color){
+  List<int> getKingPosition(String color,bool isMock){
+    if(color =='white' && isMock){
+      return mockKingWhite;
+    }
+    if(color == 'black' && isMock){
+      return mockKingBlack;
+    }
     if(color == 'white'){
       return kingWhitePosition;
     }
@@ -102,11 +109,9 @@ class GameController extends ChangeNotifier{
   }
   void pushPossibleCheck(ChessPieceData piece){
     if(piece.color == 'white'){
-      print("YESS");
       _possibleBlackChecks.add(piece);
     }
     if(piece.color == 'black'){
-      print("YESSS");
       _possibleWhiteChecks.add(piece);
     }
     notifyListeners();

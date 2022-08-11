@@ -47,7 +47,7 @@ class ChessRows extends StatelessWidget {
         ),
         width: 50,
         height: 50,
-        child: ChessCell(index, letter),
+        child: Consumer<DataArray>(builder: (context, value, child) => ChessCell(index, letter)),
       )));
   }
 }

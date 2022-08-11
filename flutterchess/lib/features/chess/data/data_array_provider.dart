@@ -34,11 +34,17 @@ class DataArray extends ChangeNotifier {
     [pW,pW,pW,pW,pW,pW,pW,pW],
     [rW,kW,bW,qW,kingW,bW,kW,rW],
   ];
-  late List<dynamic> _mockData;
-  DataArray(){
-     _mockData = List<dynamic>.from(_data);
-  }
-  
+   List<dynamic> _mockData = [
+    [rB,kB,bB,qB,kingB,bB,kB,rB],
+    [pB,pB,pB,pB,pB,pB,pB,pB],
+    [N,N,N,N,N,N,N,N],
+    [N,N,N,N,N,N,N,N],
+    [N,N,N,N,N,N,N,N],
+    [N,N,N,N,N,N,N,N],
+    [pW,pW,pW,pW,pW,pW,pW,pW],
+    [rW,kW,bW,qW,kingW,bW,kW,rW],
+  ];
+
    
   List get data => _data;
 
@@ -57,17 +63,16 @@ class DataArray extends ChangeNotifier {
     [rW,kW,bW,qW,kingW,bW,kW,rW],
   ];
     _data = starting;
-    _mockData = starting;
     notifyListeners();
   }
   List getPiece(int index, int letter, bool isMock) {
-    if(false){
-      print("dont 64");
+    if(isMock){
+      print("retrieving from Mock");
     return _mockData[index][letter];
     }
-    else{
-      return _data[index][letter];
-    }
+    return _data[index][letter];
+    
+
   }
   void setPiece(int index, int letter, dynamic value) {
     _data[index][letter] = value;
@@ -79,7 +84,7 @@ class DataArray extends ChangeNotifier {
     notifyListeners();
   }
   void redoMockData(){
-    _mockData =_data;
+    _mockData =  _data.toList();
     notifyListeners();
   }
 }

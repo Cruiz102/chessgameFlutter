@@ -335,15 +335,14 @@ bool inCheck(ChessPieceData piece, BuildContext context, isMock){
   // We interchange the color Value because we want to identify
   // if the King of the opposite color is in the possible moves of the piece.
   if (piece.color == "white"){
-  List<int> kingPosition = Provider.of<GameController>(context, listen: false).getKingPosition("black");
+  List<int> kingPosition = Provider.of<GameController>(context, listen: false).getKingPosition("black",isMock);
  // print("king position: $kingPosition");
   Vector2 kingPositionVector = Vector2(kingPosition[0].toDouble(),kingPosition[1].toDouble());
   if(possibleMoves.contains(kingPositionVector)){
-    print("fbool");
     return true;}
   }
   if (piece.color == "black"){
-  List<int> kingPosition = Provider.of<GameController>(context, listen: false).getKingPosition("white");
+  List<int> kingPosition = Provider.of<GameController>(context, listen: false).getKingPosition("white",isMock);
   Vector2 kingPositionVector = Vector2(kingPosition[0].toDouble(), kingPosition[1].toDouble());
    if(possibleMoves.contains(kingPositionVector)     ){
     print("fwifeb");
@@ -353,39 +352,45 @@ bool inCheck(ChessPieceData piece, BuildContext context, isMock){
   return false;
 }
 
-void checkPosibleCheck(int kingIndex, int kingLetter ,String color, BuildContext context, bool isMock){
+void checkPosibleCheck(String color, BuildContext context, bool isMock){
   //Look for the king of the current player.
   // from the kings position look for his diagonal and horizontal moves.
   // If there is a bishop, rook or queen in the way, add them to the list of possible checks.
-  List<int> king = [kingIndex, kingLetter];
+  List<int> king = isMock? Provider.of<GameController>(context, listen:false).getKingPosition(color, isMock):
+                           Provider.of<GameController>(context,listen:false).getKingPosition(color, false);
+  print("Check the king pos: $king , Mock :$isMock");
   // Linear Searchs thought his diagonals and horizontals
+  
+
   if(color =="white"){
   for(int i = 1; i < 8; i++){
     // Checks the  Down of the king. Checking for Black Rooks and Queens.
     if((Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),king[1], isMock )[1] == "rB"||
        Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),king[1] , isMock)[1] == "qB")&&
-       king[0] + i > 8  ){
+       king[0] + i < 8  ){
       List possiblePiece = Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),king[1], isMock );
       ChessPieceData piece = ChessPieceData(image:possiblePiece[0],name: possiblePiece[1],
                                   color: possiblePiece[2], index: (king[0] + i), letter: king[1]);
       // Push Piece to the possiblesCheck list.
+      print("OK this is to check if there is something Worng WEEEPIII Down ");
       Provider.of<GameController>(context, listen: false).pushPossibleCheck(piece);
     }
   
     // Checks the  UP of the king. Checking for Black Rooks and Queens.
     if((Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i),king[1], isMock )[1] == "rB"||
        Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i),king[1], isMock )[1] == "qB")&&
-       king[0] - i < 0  ){
+       king[0] - i > 0  ){
       List possiblePiece = Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i),king[1], isMock );
       ChessPieceData piece = ChessPieceData(image:possiblePiece[0],name: possiblePiece[1],
                                   color: possiblePiece[2], index: (king[0] - 1), letter: king[1]);
       // Push Piece to the possiblesCheck list.
+      print("OK this is to check if there is something Worng WEEEPIII UP ");
       Provider.of<GameController>(context, listen: false).pushPossibleCheck(piece);
     }
     // Checks the  Right of the king. Checking for Black Rooks and Queens.
     if((Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),king[1],isMock )[1] == "rB"||
        Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),king[1], isMock )[1] == "qB")&&
-       king[1] + i > 8  ){
+       king[1] + i < 8  ){
       List possiblePiece = Provider.of<DataArray>(context, listen: false).getPiece(king[0],clampBorder(king[1] + i), isMock );
       ChessPieceData piece = ChessPieceData(image:possiblePiece[0],name: possiblePiece[1],
                                   color: possiblePiece[2], index: (king[0] + 1), letter: king[1]);
@@ -395,7 +400,7 @@ void checkPosibleCheck(int kingIndex, int kingLetter ,String color, BuildContext
     // Checks the  Left of the king. Checking for Black Rooks and Queens.
     if((Provider.of<DataArray>(context, listen: false).getPiece(king[0] ,clampBorder(king[1] - i),isMock )[1] == "rB"||
        Provider.of<DataArray>(context, listen: false).getPiece(king[0] ,clampBorder(king[1] - i), isMock )[1] == "qB")&&
-       king[1] - i < 0  ){
+       king[1] - i > 0  ){
       List possiblePiece = Provider.of<DataArray>(context, listen: false).getPiece(king[0],clampBorder(king[1] - i), isMock );
       ChessPieceData piece = ChessPieceData(image:possiblePiece[0],name: possiblePiece[1],
                                   color: possiblePiece[2], index: king[0], letter: (king[1] - 1));
@@ -405,7 +410,7 @@ void checkPosibleCheck(int kingIndex, int kingLetter ,String color, BuildContext
     //Checks the UP Right Diagonal of the king. Checking for Black Bishop and Queens.
     if((Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),clampBorder(king[1] + i), isMock )[1] == "bB"||
        Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),clampBorder(king[1] + i), isMock )[1] == "qB")&&
-      ( king[0] + i > 8 || king[1] + i > 8 ) ){
+      ( king[0] + i < 8 || king[1] + i < 8 ) ){
       List possiblePiece = Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),clampBorder(king[1] + i), isMock );
       ChessPieceData piece = ChessPieceData(image:possiblePiece[0],name: possiblePiece[1],
                                   color: possiblePiece[2], index: king[0]+i, letter: king[1]+i);
@@ -416,7 +421,7 @@ void checkPosibleCheck(int kingIndex, int kingLetter ,String color, BuildContext
     //Checks the UP Left Diagonal of the king. Checking for Black Bishop and Queens.
     if((Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),clampBorder(king[1] - i), isMock )[1] == "bB"||
        Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),clampBorder(king[1] - i),isMock )[1] == "qB")&&
-       (king[0] + i > 8 || king[1] - i < 0)  ){
+       (king[0] + i < 8 || king[1] - i > 0)  ){
       List possiblePiece = Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),clampBorder(king[1] - i),isMock );
       ChessPieceData piece = ChessPieceData(image:possiblePiece[0],name: possiblePiece[1],
                                   color: possiblePiece[2], index: king[0]+i, letter: king[1]-i);
@@ -426,7 +431,7 @@ void checkPosibleCheck(int kingIndex, int kingLetter ,String color, BuildContext
     //Checks the DOWN Right Diagonal of the king. Checking for Black Bishop and Queens.
     if((Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i),clampBorder(king[1] + i),isMock )[1] == "bB"||
        Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i),clampBorder(king[1] + i),isMock )[1] == "qB")&&
-       (king[0] - i < 0 || king[1] + i > 8)  ){
+       (king[0] - i > 0 || king[1] + i < 8)  ){
       List possiblePiece = Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i),clampBorder(king[1] + i),isMock );
       ChessPieceData piece = ChessPieceData(image:possiblePiece[0],name: possiblePiece[1],
                                   color: possiblePiece[2], index: king[0]-i, letter: king[1]+i);
@@ -436,7 +441,7 @@ void checkPosibleCheck(int kingIndex, int kingLetter ,String color, BuildContext
     //Checks the DOWN Left Diagonal of the king. Checking for Black Bishop and Queens.
     if((Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i),clampBorder(king[1] - i),isMock )[1] == "bB"||
        Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i),clampBorder(king[1] - i),isMock )[1] == "qB")&&
-       (king[0] - i < 0 || king[1] - i < 0)  ){
+       (king[0] - i > 0 || king[1] - i > 0)  ){
       List possiblePiece = Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] - i),clampBorder(king[1] - i),isMock );
       ChessPieceData piece = ChessPieceData(image:possiblePiece[0],name: possiblePiece[1],
                                   color: possiblePiece[2], index: king[0]- i, letter: king[1] - i);
@@ -448,7 +453,6 @@ void checkPosibleCheck(int kingIndex, int kingLetter ,String color, BuildContext
   }
   }
   if(color == "black"){
-    print("king pos: $king");
     for (int i = 1; i < 8; i++){
       // Checks the Down of the king. Checking for White Rooks and Queens.
       if((Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),king[1],isMock )[1] == "rW"||
@@ -458,8 +462,7 @@ void checkPosibleCheck(int kingIndex, int kingLetter ,String color, BuildContext
         ChessPieceData piece = ChessPieceData(image:possiblePiece[0],name: possiblePiece[1],
                                     color: possiblePiece[2], index: clampBorder(king[0] + i), letter: king[1]);
         // Push Piece to the possiblesCheck list.
-        print("there i something down here");
-        print("${piece.name}");
+        print("What are you doing!!!?? ${king[0] + i}, ${king[1]}");
         Provider.of<GameController>(context, listen: false).pushPossibleCheck(piece);
       }
       // Checks the UP of the king. Checking for White Rooks and Queens.
@@ -516,8 +519,6 @@ void checkPosibleCheck(int kingIndex, int kingLetter ,String color, BuildContext
       if((Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),clampBorder(king[1] + i),isMock)[1] == "bW"||
          Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i), clampBorder(king[1] + i),isMock)[1] == "qW")&&
         ( king[0] + i < 8 && king[1] + i < 8 ) ){
-          print("Down Right ${king[0] + i < 8 } || ${ king[1] + i < 8}");
-          print(" pieceis queen??: ${Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i), clampBorder(king[1] + i),isMock)[1]}");
         List possiblePiece = Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i), clampBorder(king[1] + i),isMock);
         ChessPieceData piece = ChessPieceData(image:possiblePiece[0],name: possiblePiece[1],
                                     color: possiblePiece[2], index: clampBorder(king[0]+i), letter: clampBorder(king[1] + i));
@@ -531,7 +532,6 @@ void checkPosibleCheck(int kingIndex, int kingLetter ,String color, BuildContext
         List possiblePiece = Provider.of<DataArray>(context, listen: false).getPiece(clampBorder(king[0] + i),clampBorder(king[1] - i),isMock);
         ChessPieceData piece = ChessPieceData(image:possiblePiece[0],name: possiblePiece[1],
                                     color: possiblePiece[2], index: king[0]+i, letter: king[1]-i);
-        print("${piece.name}, ${piece.index}, ${piece.letter}");
         // Push Piece to the possiblesCheck list.
         Provider.of<GameController>(context, listen: false).pushPossibleCheck(piece);
       }
@@ -550,7 +550,6 @@ void checkPosibleCheck(int kingIndex, int kingLetter ,String color, BuildContext
 // We change it to bool because we dont want to change the  BlackcheckValue yet.
 bool checkForWhiteChecks(BuildContext context, bool value, bool isMock){
   List possibleChecks = Provider.of<GameController>(context, listen: false).possibleWhiteChecks;
-  List currentKingPosition = Provider.of<GameController>(context, listen:false).kingWhitePosition;
   for(int i = 0; i < possibleChecks.length; i++){
      if(inCheck(possibleChecks[i], context,isMock)){
        return true;//Provider.of<GameController>(context, listen: false).changeWhiteCheck(value);
@@ -561,7 +560,6 @@ bool checkForWhiteChecks(BuildContext context, bool value, bool isMock){
 }
 bool checkForBlackChecks(BuildContext context , bool value, bool isMock){
   List possibleChecks = Provider.of<GameController>(context, listen: false).possibleBlackChecks;
-  List currentKingPosition = Provider.of<GameController>(context, listen:false).kingWhitePosition;
   for(int i = 0; i < possibleChecks.length; i++){
     if(inCheck(possibleChecks[i], context,isMock)){
       print("ISSS in CHECK");
@@ -574,30 +572,18 @@ bool checkForBlackChecks(BuildContext context , bool value, bool isMock){
 }
 // Must be bool because  if in this play the king is not in check.
 //The player can move.
-bool stillInCheck(var piece, BuildContext context, int kingIndex, int kingLetter,isMock){
+bool stillInCheck(var piece, BuildContext context,bool isMock){
 
-  if(piece.name =="kingB" || piece.name =="kingW"){
-  checkPosibleCheck(kingIndex,kingLetter,piece.color, context, isMock);
-  print("check Possible Checks${Provider.of<GameController>(context, listen: false).possibleBlackChecks.map((e) => [e.index, e.letter, e.color, e.name]).toList()}");
-    if(piece.color == "black"){
-      return checkForBlackChecks(context, false,isMock);
-    }
-    if(piece.color =="white"){
-      return checkForWhiteChecks(context, false,isMock);
-    }
-  }
-  else{
+
    if(piece.color == "white"){
-    List King = Provider.of<GameController>(context, listen:false).kingWhitePosition;
-    checkPosibleCheck(King[0],King[1],piece.color, context,isMock);
+    checkPosibleCheck(piece.color, context,isMock);
     return checkForWhiteChecks(context, false,isMock);
   }
   if(piece.color == "black"){
-    List King = Provider.of<GameController>(context, listen:false).kingBlackPosition;
-    checkPosibleCheck(King[0],King[1],piece.color, context,isMock);
+    checkPosibleCheck(piece.color, context,isMock);
     return checkForBlackChecks(context, false,isMock);
   }
-  }
+  
 
     
   
