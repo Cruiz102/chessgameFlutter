@@ -1,16 +1,11 @@
 # flutterchess
 
-A new Flutter project.
+A Chess Game made in Flutter
 
-## Getting Started
+## Description:
+A Normal Chess Application currently in development.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## RoadMap of the application:
+ - Developing the Chess Game with all his rules(Current)
+ - Developing the AI of the Game using Minimax Algorithm.
+ - Develop the v.2 of the AI. Using Neural Networks and Monte Carlos Search trees.
