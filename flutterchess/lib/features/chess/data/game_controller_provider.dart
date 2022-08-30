@@ -78,13 +78,21 @@ class GameController extends ChangeNotifier{
     notifyListeners();
 
   }
-  void updateKingPosition(String color, int index, int letter){
+  void updateKingPosition(String color, int index, int letter, bool isMock){
+    if(color == "white" && isMock){
+      mockKingWhite = [index, letter];
+    }
+    if(color =="black" && isMock){
+      mockKingBlack = [index, letter];
+    }
     if(color == 'white'){
       kingWhitePosition = [index,letter];
+      mockKingWhite = [index,letter];
       
     }
     if(color == 'black'){
       kingBlackPosition = [index,letter];
+      mockKingBlack = [index,letter];
     }
     notifyListeners();
   }

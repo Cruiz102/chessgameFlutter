@@ -36,8 +36,9 @@ class ChessRows extends StatelessWidget {
     }}
   @override
   Widget build(BuildContext context) {
-
-    return Row(
+    return
+Consumer<DataArray>(builder: (context, value, child) =>
+     Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(8, (letter) => Container(
@@ -48,6 +49,6 @@ class ChessRows extends StatelessWidget {
         width: 50,
         height: 50,
         child: Consumer<DataArray>(builder: (context, value, child) => ChessCell(index, letter)),
-      )));
+      ))));
   }
 }

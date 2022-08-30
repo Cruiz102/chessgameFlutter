@@ -57,13 +57,14 @@ class MyHomePage extends StatelessWidget {
         child: Consumer<WidgetOnScreen>(builder: (context, widgetProvider, child)=>
          Stack(children: Provider.of<WidgetOnScreen>(context, listen:false).onScreen))),
       floatingActionButton: 
+      Consumer<WidgetOnScreen>(builder:(context, value, child) => 
       FloatingActionButton(
         onPressed: () {
           Provider.of<DataArray>(context, listen: false).setData();
           Provider.of<GameController>(context,listen:false).restartPosition();
         },
         child: const Icon(Icons.clear),
-      ),
+      )),
     );
 
   }

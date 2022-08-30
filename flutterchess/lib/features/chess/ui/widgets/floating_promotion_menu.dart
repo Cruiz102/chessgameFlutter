@@ -24,9 +24,11 @@ class FloatingPromotionMenu extends StatelessWidget {
     child:  whitePieceCollection[index][0],),
     onTap: () =>  {value = whitePieceCollection[index],
                     deleteFloatingPromotion(),
+                    print(" ahhh Young Miko${Provider.of<DataArray>(context, listen: false).getPiece(position[0], position[1], true)}"),
                     Provider.of<GameController>(context, listen:false).changeWhiteMove(),
                     Provider.of<GameController>(context, listen:false).changeTurns(),
-                    Provider.of<DataArray>(context, listen:false).setPiece(position[0], position[1],value )
+                    Provider.of<DataArray>(context, listen:false).setPiece(position[0], position[1],value ),
+                    print(" ahhh Young Miko${Provider.of<DataArray>(context, listen: false).getPiece(position[0], position[1], true)}"),
 
                     }
   ));
@@ -38,9 +40,11 @@ class FloatingPromotionMenu extends StatelessWidget {
     onTap: () =>  {value = blackPieceCollection[index],
                     // Delete the Floating Promotion menu
                     deleteFloatingPromotion(),
+                    print(" ahhh Young Miko${Provider.of<DataArray>(context, listen: false).getPiece(position[0], position[1], true)}"),
                     Provider.of<GameController>(context, listen:false).changeBlackMove(),
                     Provider.of<GameController>(context, listen:false).changeTurns(),
-                    Provider.of<DataArray>(context, listen:false).setPiece(position[0], position[1],value )
+                    Provider.of<DataArray>(context, listen:false).setPiece(position[0], position[1],value ),
+                    print(" ahhh Young Miko${Provider.of<DataArray>(context, listen: false).getPiece(position[0], position[1], true)}")
                    
     }
   ));

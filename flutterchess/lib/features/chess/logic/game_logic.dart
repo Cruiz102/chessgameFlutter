@@ -336,6 +336,8 @@ bool inCheck(ChessPieceData piece, BuildContext context, isMock){
   // if the King of the opposite color is in the possible moves of the piece.
   if (piece.color == "white"){
   List<int> kingPosition = Provider.of<GameController>(context, listen: false).getKingPosition("black",isMock);
+  print(isMock);
+  print("Kksjgfings: $kingPosition");
  // print("king position: $kingPosition");
   Vector2 kingPositionVector = Vector2(kingPosition[0].toDouble(),kingPosition[1].toDouble());
   if(possibleMoves.contains(kingPositionVector)){
@@ -588,4 +590,19 @@ bool stillInCheck(var piece, BuildContext context,bool isMock){
     
   
   return false;
+}
+//TODO: To implement
+bool castling(bool left, bool right){
+  
+  
+  return true;
+}
+
+void checkAllMove( BuildContext context){
+  var dataList = Provider.of<DataArray>(context, listen:false).getData();
+  for(int i = 0; i< 8; i++){
+    for(int e = 0; e<8; e++){
+
+    }
+  }
 }

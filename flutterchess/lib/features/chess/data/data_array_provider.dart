@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'constant.dart';
 
 class DataArray extends ChangeNotifier {
-  //TODO: Create a Mock data Array for testing if the next play
-  // is possible. This will then be set to the original state of
-  // of the game after the check. In the case the move is possible
-  // it will be inverse, the original will copy the MockData Array.
+  //
   
   // Also we will need a solution for checking in this MockDataArray.
   //Because the function allPossibleMoves and checkPieces check Pieces
   // on the DataArray. Becuase they use the getPiece method that only check
-  // on the original DataArray.
+  // on the original DataArraTODO: Create a Mock data Array for testing if the next play
+  // is possible. This will then be set to the original state of
+  // of the game after the check. In the case the move is possible
+  // it will be inverse, the original will copy the MockData Array.y.
   //Possibles Solutions:
   // - Make an identifier in the getPiece method to check in what DataArray
   //     we want to check. In this implementation we must change also the
