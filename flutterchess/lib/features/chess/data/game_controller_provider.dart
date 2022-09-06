@@ -33,6 +33,14 @@ class GameController extends ChangeNotifier{
     List<int> kingBlackPosition = [0,4];
     List<int> mockKingBlack = [0,4];
 
+    // Variables that check the castling 
+    bool _blackKingHasMove = false;
+    bool _whiteKingHasMove = false;
+    bool _whiteRookLeftHasMove = false;
+    bool _whiteRookRightHasMove = false;
+    bool _blackRookLeftHasMove = false;
+    bool _blackRookRightHasMove = false;
+
   int get blackMove => _blackMove;
   int get whiteMove => _whiteMove;
   List get possibleWhiteChecks => _possibleWhiteChecks;
@@ -40,6 +48,12 @@ class GameController extends ChangeNotifier{
   bool get inWhiteCheck => _inWhiteCheck;
   bool get inBlackCheck => _inBlackCheck;
 
+  bool get  blackKingHasMove => _blackKingHasMove;
+  bool get  whiteKingHasMove => _whiteKingHasMove;
+  bool get  whiteRookLeftHasMove => _whiteRookLeftHasMove;
+  bool get  whiteRookRightHasMove => _whiteRookRightHasMove;
+  bool get  blackRookRightHasMove => _blackRookRightHasMove;
+  bool get  blackRookLeftHasMove => _blackRookLeftHasMove;
 // Restart all the game Variables.
   void restartPosition(){
 
@@ -129,5 +143,38 @@ class GameController extends ChangeNotifier{
     _possibleBlackChecks.clear();
     notifyListeners();
   }
+
+  void updateblackKingHasMove(bool value, String color){
+    if (color == "white"){
+     _whiteKingHasMove = value;
+     }
+    if(color == "black"){
+      _blackKingHasMove = value;
+    }
+  }
+  /// This function is to update the variables
+  /// whiteRookHasMove for their respectively side.
+  /// The `side` parameter must be `right` or `left`.
+  void updateRookHasMove(bool value, String color, String side){
+    if(color =="white"){
+      if (side == "right"){
+        _whiteRookRightHasMove = value;
+      }
+      if(side == "left"){
+        _whiteRookLeftHasMove = value;
+      }
+    if(color == "black"){
+      if(side == "right"){
+        _blackRookRightHasMove = value;
+      }
+      if(side == "left"){
+        _blackRookLeftHasMove = value;
+      }
+    }
+    }
+  }
+
+
+
 
 }

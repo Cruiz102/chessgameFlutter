@@ -593,7 +593,9 @@ bool stillInCheck(var piece, BuildContext context,bool isMock){
 }
 //TODO: To implement
 bool castling(bool left, bool right){
-  
+  // Check if the king has moved
+  // Check the a8, h8, a1, h1 spaces if there have been any changes
+  // in the pieces and  those pieces should be rook.
   
   return true;
 }
